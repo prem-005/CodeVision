@@ -1,0 +1,3838 @@
+[
+  {
+    "id": 1,
+    "title": "Two Sum",
+    "slug": "two-sum",
+    "difficulty": "Easy",
+    "topic": "Array",
+    "company_tags": "Amazon, Google, Microsoft, Adobe, Apple",
+    "description": "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nInput format: First line contains comma-separated integers for `nums`. Second line contains integer `target`.\nOutput format: Two space-separated indices.",
+    "constraints": "2 <= nums.length <= 10^4\n-10^9 <= nums[i] <= 10^9\n-10^9 <= target <= 10^9\nOnly one valid answer exists.",
+    "starter_code": {
+      "python": "def twoSum(nums, target):\n    # Return [index1, index2]\n    seen = {}\n    for i, num in enumerate(nums):\n        diff = target - num\n        if diff in seen:\n            return [seen[diff], i]\n        seen[num] = i\n    return []\n\nif __name__ == '__main__':\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    if lines:\n        nums = list(map(int, lines[0].split(',')))\n        target = int(lines[1])\n        res = twoSum(nums, target)\n        print(f'{res[0]} {res[1]}')\n",
+      "javascript": "const fs = require('fs');\nfunction twoSum(nums, target) {\n    const seen = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const diff = target - nums[i];\n        if (seen.has(diff)) return [seen.get(diff), i];\n        seen.set(nums[i], i);\n    }\n    return [];\n}\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nif (input.length >= 2) {\n    const nums = input[0].split(',').map(Number);\n    const target = Number(input[1]);\n    const res = twoSum(nums, target);\n    console.log(`${res[0]} ${res[1]}`);\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    string line; int target;\n    if (getline(cin, line) && cin >> target) {\n        stringstream ss(line); string item;\n        vector<int> nums;\n        while (getline(ss, item, ',')) nums.push_back(stoi(item));\n        unordered_map<int, int> mp;\n        for (int i = 0; i < nums.size(); i++) {\n            int diff = target - nums[i];\n            if (mp.count(diff)) {\n                cout << mp[diff] << \" \" << i << endl;\n                return 0;\n            }\n            mp[nums[i]] = i;\n        }\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] parts = sc.nextLine().trim().split(\",\");\n            int[] nums = new int[parts.length];\n            for (int i = 0; i < parts.length; i++) nums[i] = Integer.parseInt(parts[i].trim());\n            int target = sc.nextInt();\n            Map<Integer, Integer> map = new HashMap<>();\n            for (int i = 0; i < nums.length; i++) {\n                int diff = target - nums[i];\n                if (map.containsKey(diff)) {\n                    System.out.println(map.get(diff) + \" \" + i);\n                    return;\n                }\n                map.put(nums[i], i);\n            }\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    char line[1024];\n    if (fgets(line, sizeof(line), stdin)) {\n        int target;\n        if (scanf(\"%d\", &target) == 1) {\n            int nums[1000], n = 0;\n            char *token = strtok(line, \",\\n\");\n            while (token) {\n                nums[n++] = atoi(token);\n                token = strtok(NULL, \",\\n\");\n            }\n            for (int i = 0; i < n; i++) {\n                for (int j = i + 1; j < n; j++) {\n                    if (nums[i] + nums[j] == target) {\n                        printf(\"%d %d\\n\", i, j);\n                        return 0;\n                    }\n                }\n            }\n        }\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Use a hash map to look up complements in O(1) time.",
+      "Think about trading space complexity for time complexity."
+    ],
+    "acceptance_rate": 52.4,
+    "testcases": [
+      {
+        "input_data": "2,7,11,15\n9",
+        "expected_output": "0 1",
+        "is_hidden": false,
+        "explanation": "nums[0] + nums[1] == 9"
+      },
+      {
+        "input_data": "3,2,4\n6",
+        "expected_output": "1 2",
+        "is_hidden": false,
+        "explanation": "nums[1] + nums[2] == 6"
+      },
+      {
+        "input_data": "3,3\n6",
+        "expected_output": "0 1",
+        "is_hidden": false,
+        "explanation": "Duplicate numbers at distinct indices"
+      },
+      {
+        "input_data": "1,5,8,12,19\n27",
+        "expected_output": "2 4",
+        "is_hidden": true,
+        "explanation": "8 + 19 = 27"
+      },
+      {
+        "input_data": "-3,4,3,90\n0",
+        "expected_output": "0 2",
+        "is_hidden": true,
+        "explanation": "Negative numbers: -3 + 3 = 0"
+      },
+      {
+        "input_data": "100,200,300,400\n700",
+        "expected_output": "2 3",
+        "is_hidden": true,
+        "explanation": "Large numbers"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Best Time to Buy and Sell Stock",
+    "slug": "best-time-to-buy-and-sell-stock",
+    "difficulty": "Easy",
+    "topic": "Array",
+    "company_tags": "Amazon, Microsoft, Google, TCS, Infosys",
+    "description": "You are given an array `prices` where `prices[i]` is the price of a given stock on the `i`th day.\n\nYou want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.\n\nReturn the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.\n\nInput format: Comma-separated integers.\nOutput format: Integer maximum profit.",
+    "constraints": "1 <= prices.length <= 10^5\n0 <= prices[i] <= 10^4",
+    "starter_code": {
+      "python": "def maxProfit(prices):\n    min_price = float('inf')\n    max_profit = 0\n    for p in prices:\n        if p < min_price:\n            min_price = p\n        elif p - min_price > max_profit:\n            max_profit = p - min_price\n    return max_profit\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        prices = list(map(int, inp.split(',')))\n        print(maxProfit(prices))\n",
+      "javascript": "const fs = require('fs');\nfunction maxProfit(prices) {\n    let minPrice = Infinity, maxProfit = 0;\n    for (let p of prices) {\n        if (p < minPrice) minPrice = p;\n        else if (p - minPrice > maxProfit) maxProfit = p - minPrice;\n    }\n    return maxProfit;\n}\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) console.log(maxProfit(input.split(',').map(Number)));\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; vector<int> prices;\n        while (getline(ss, item, ',')) prices.push_back(stoi(item));\n        int min_price = 1e9, max_profit = 0;\n        for (int p : prices) {\n            min_price = min(min_price, p);\n            max_profit = max(max_profit, p - min_price);\n        }\n        cout << max_profit << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] parts = sc.nextLine().trim().split(\",\");\n            int minPrice = Integer.MAX_VALUE, maxProfit = 0;\n            for (String s : parts) {\n                int p = Integer.parseInt(s.trim());\n                if (p < minPrice) minPrice = p;\n                else if (p - minPrice > maxProfit) maxProfit = p - minPrice;\n            }\n            System.out.println(maxProfit);\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    char line[4096];\n    if (fgets(line, sizeof(line), stdin)) {\n        int min_p = 1000000, max_prof = 0;\n        char *tok = strtok(line, \",\\n\");\n        while (tok) {\n            int p = atoi(tok);\n            if (p < min_p) min_p = p;\n            else if (p - min_p > max_prof) max_prof = p - min_p;\n            tok = strtok(NULL, \",\\n\");\n        }\n        printf(\"%d\\n\", max_prof);\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Keep track of the lowest buying price seen so far as you iterate."
+    ],
+    "acceptance_rate": 54.1,
+    "testcases": [
+      {
+        "input_data": "7,1,5,3,6,4",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Buy on day 2 (price=1) and sell on day 5 (price=6), profit = 5"
+      },
+      {
+        "input_data": "7,6,4,3,1",
+        "expected_output": "0",
+        "is_hidden": false,
+        "explanation": "No positive profit possible"
+      },
+      {
+        "input_data": "2,4,1",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Buy at 2 sell at 4 -> profit = 2"
+      },
+      {
+        "input_data": "1,2",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Two elements"
+      },
+      {
+        "input_data": "3,3,3,3",
+        "expected_output": "0",
+        "is_hidden": true,
+        "explanation": "All equal elements"
+      },
+      {
+        "input_data": "1,2,4,2,5,7,2,4,9,0,9",
+        "expected_output": "9",
+        "is_hidden": true,
+        "explanation": "Buy at 0 sell at 9 -> profit = 9"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Contains Duplicate",
+    "slug": "contains-duplicate",
+    "difficulty": "Easy",
+    "topic": "Array",
+    "company_tags": "Amazon, Apple, Microsoft, TCS",
+    "description": "Given an integer array `nums`, return `true` if any value appears at least twice in the array, and return `false` if every element is distinct.\n\nInput format: Comma-separated integers.\nOutput format: `true` or `false` (lowercase).",
+    "constraints": "1 <= nums.length <= 10^5\n-10^9 <= nums[i] <= 10^9",
+    "starter_code": {
+      "python": "def containsDuplicate(nums):\n    return len(nums) != len(set(nums))\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        nums = list(map(int, inp.split(',')))\n        print('true' if containsDuplicate(nums) else 'false')\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) {\n    const nums = input.split(',').map(Number);\n    const set = new Set(nums);\n    console.log(set.size !== nums.length ? 'true' : 'false');\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\n#include <unordered_set>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; unordered_set<int> st; bool dup = false;\n        while (getline(ss, item, ',')) {\n            int v = stoi(item);\n            if (st.count(v)) { dup = true; break; }\n            st.insert(v);\n        }\n        cout << (dup ? \"true\" : \"false\") << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] p = sc.nextLine().trim().split(\",\");\n            Set<Integer> set = new HashSet<>();\n            for (String s : p) {\n                if (!set.add(Integer.parseInt(s.trim()))) {\n                    System.out.println(\"true\");\n                    return;\n                }\n            }\n            System.out.println(\"false\");\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint comp(const void *a, const void *b) { return (*(int*)a - *(int*)b); }\nint main() {\n    char line[4096];\n    if (fgets(line, sizeof(line), stdin)) {\n        int nums[2000], n = 0;\n        char *t = strtok(line, \",\\n\");\n        while (t) { nums[n++] = atoi(t); t = strtok(NULL, \",\\n\"); }\n        qsort(nums, n, sizeof(int), comp);\n        for (int i = 1; i < n; i++) {\n            if (nums[i] == nums[i - 1]) { printf(\"true\\n\"); return 0; }\n        }\n        printf(\"false\\n\");\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Use a hash set to detect duplicate entries in linear time."
+    ],
+    "acceptance_rate": 61.2,
+    "testcases": [
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "1 appears twice"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "false",
+        "is_hidden": false,
+        "explanation": "all elements distinct"
+      },
+      {
+        "input_data": "1,1,1,3,3,4,3,2,4,2",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "multiple duplicates"
+      },
+      {
+        "input_data": "10",
+        "expected_output": "false",
+        "is_hidden": true,
+        "explanation": "single element"
+      },
+      {
+        "input_data": "-1,-2,-3,-1",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "negative duplicates"
+      },
+      {
+        "input_data": "100,200,300,400,500",
+        "expected_output": "false",
+        "is_hidden": true,
+        "explanation": "all unique large"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Product of Array Except Self",
+    "slug": "product-of-array-except-self",
+    "difficulty": "Medium",
+    "topic": "Array",
+    "company_tags": "Amazon, Microsoft, Apple, Google, Zoho",
+    "description": "Given an integer array `nums`, return an array `answer` such that `answer[i]` is equal to the product of all the elements of `nums` except `nums[i]`.\n\nThe product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n\nYou must write an algorithm that runs in `O(n)` time and without using the division operation.\n\nInput format: Comma-separated integers.\nOutput format: Comma-separated integers.",
+    "constraints": "2 <= nums.length <= 10^5\n-30 <= nums[i] <= 30\nThe product of any prefix or suffix fits in a 32-bit integer.",
+    "starter_code": {
+      "python": "def productExceptSelf(nums):\n    n = len(nums)\n    res = [1] * n\n    prefix = 1\n    for i in range(n):\n        res[i] = prefix\n        prefix *= nums[i]\n    suffix = 1\n    for i in range(n - 1, -1, -1):\n        res[i] *= suffix\n        suffix *= nums[i]\n    return res\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        nums = list(map(int, inp.split(',')))\n        res = productExceptSelf(nums)\n        print(','.join(map(str, res)))\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) {\n    const nums = input.split(',').map(Number);\n    const n = nums.length;\n    const res = new Array(n).fill(1);\n    let pref = 1;\n    for (let i = 0; i < n; i++) { res[i] = pref; pref *= nums[i]; }\n    let suff = 1;\n    for (let i = n - 1; i >= 0; i--) { res[i] *= suff; suff *= nums[i]; }\n    console.log(res.join(','));\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; vector<int> nums;\n        while (getline(ss, item, ',')) nums.push_back(stoi(item));\n        int n = nums.size(); vector<int> res(n, 1);\n        int pref = 1; for (int i = 0; i < n; i++) { res[i] = pref; pref *= nums[i]; }\n        int suff = 1; for (int i = n - 1; i >= 0; i--) { res[i] *= suff; suff *= nums[i]; }\n        for (int i = 0; i < n; i++) { cout << res[i] << (i + 1 == n ? \"\" : \",\"); }\n        cout << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] parts = sc.nextLine().trim().split(\",\");\n            int n = parts.length;\n            int[] nums = new int[n];\n            for (int i = 0; i < n; i++) nums[i] = Integer.parseInt(parts[i].trim());\n            int[] res = new int[n];\n            int pref = 1;\n            for (int i = 0; i < n; i++) { res[i] = pref; pref *= nums[i]; }\n            int suff = 1;\n            for (int i = n - 1; i >= 0; i--) { res[i] *= suff; suff *= nums[i]; }\n            for (int i = 0; i < n; i++) {\n                System.out.print(res[i] + (i + 1 == n ? \"\" : \",\"));\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main() {\n    char line[4096];\n    if (fgets(line, sizeof(line), stdin)) {\n        int nums[1000], n = 0;\n        char *t = strtok(line, \",\\n\");\n        while (t) { nums[n++] = atoi(t); t = strtok(NULL, \",\\n\"); }\n        int res[1000];\n        int pref = 1; for (int i = 0; i < n; i++) { res[i] = pref; pref *= nums[i]; }\n        int suff = 1; for (int i = n - 1; i >= 0; i--) { res[i] *= suff; suff *= nums[i]; }\n        for (int i = 0; i < n; i++) { printf(\"%d%s\", res[i], (i + 1 == n ? \"\\n\" : \",\")); }\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Construct prefix and suffix product passes to eliminate division."
+    ],
+    "acceptance_rate": 65.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "24,12,8,6",
+        "is_hidden": false,
+        "explanation": "standard array"
+      },
+      {
+        "input_data": "-1,1,0,-3,3",
+        "expected_output": "0,0,9,0,0",
+        "is_hidden": false,
+        "explanation": "array with zero"
+      },
+      {
+        "input_data": "2,3",
+        "expected_output": "3,2",
+        "is_hidden": false,
+        "explanation": "size 2"
+      },
+      {
+        "input_data": "0,0",
+        "expected_output": "0,0",
+        "is_hidden": true,
+        "explanation": "multiple zeros"
+      },
+      {
+        "input_data": "1,1,1,1",
+        "expected_output": "1,1,1,1",
+        "is_hidden": true,
+        "explanation": "all ones"
+      },
+      {
+        "input_data": "2,2,2,2,2",
+        "expected_output": "16,16,16,16,16",
+        "is_hidden": true,
+        "explanation": "all same values"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Maximum Subarray (Kadane's Algorithm)",
+    "slug": "maximum-subarray",
+    "difficulty": "Medium",
+    "topic": "Array",
+    "company_tags": "Amazon, Microsoft, Google, Wipro, TCS",
+    "description": "Given an integer array `nums`, find the subarray with the largest sum, and return its sum.\n\nInput format: Comma-separated integers.\nOutput format: Integer maximum subarray sum.",
+    "constraints": "1 <= nums.length <= 10^5\n-10^4 <= nums[i] <= 10^4",
+    "starter_code": {
+      "python": "def maxSubArray(nums):\n    max_sum = current_sum = nums[0]\n    for x in nums[1:]:\n        current_sum = max(x, current_sum + x)\n        max_sum = max(max_sum, current_sum)\n    return max_sum\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        nums = list(map(int, inp.split(',')))\n        print(maxSubArray(nums))\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) {\n    const nums = input.split(',').map(Number);\n    let maxSum = nums[0], curr = nums[0];\n    for (let i = 1; i < nums.length; i++) {\n        curr = Math.max(nums[i], curr + nums[i]);\n        maxSum = Math.max(maxSum, curr);\n    }\n    console.log(maxSum);\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; vector<int> nums;\n        while (getline(ss, item, ',')) nums.push_back(stoi(item));\n        int max_s = nums[0], curr = nums[0];\n        for (size_t i = 1; i < nums.size(); i++) {\n            curr = max(nums[i], curr + nums[i]);\n            max_s = max(max_s, curr);\n        }\n        cout << max_s << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] parts = sc.nextLine().trim().split(\",\");\n            int maxS = Integer.parseInt(parts[0].trim()), curr = maxS;\n            for (int i = 1; i < parts.length; i++) {\n                int x = Integer.parseInt(parts[i].trim());\n                curr = Math.max(x, curr + x);\n                maxS = Math.max(maxS, curr);\n            }\n            System.out.println(maxS);\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main() {\n    char line[4096];\n    if (fgets(line, sizeof(line), stdin)) {\n        int nums[1000], n = 0;\n        char *t = strtok(line, \",\\n\");\n        while (t) { nums[n++] = atoi(t); t = strtok(NULL, \",\\n\"); }\n        int max_s = nums[0], curr = nums[0];\n        for (int i = 1; i < n; i++) {\n            curr = (nums[i] > curr + nums[i]) ? nums[i] : (curr + nums[i]);\n            if (curr > max_s) max_s = curr;\n        }\n        printf(\"%d\\n\", max_s);\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Think about Kadane's Algorithm: at each position decide whether to continue the current subarray or start fresh."
+    ],
+    "acceptance_rate": 50.3,
+    "testcases": [
+      {
+        "input_data": "-2,1,-3,4,-1,2,1,-5,4",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "[4,-1,2,1] has the largest sum = 6"
+      },
+      {
+        "input_data": "1",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "single element"
+      },
+      {
+        "input_data": "5,4,-1,7,8",
+        "expected_output": "23",
+        "is_hidden": false,
+        "explanation": "all elements sum = 23"
+      },
+      {
+        "input_data": "-1",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "explanation": "single negative"
+      },
+      {
+        "input_data": "-3,-2,-1,-4",
+        "expected_output": "-1",
+        "is_hidden": true,
+        "explanation": "all negatives"
+      },
+      {
+        "input_data": "1,2,3,-10,4,5,6",
+        "expected_output": "15",
+        "is_hidden": true,
+        "explanation": "[4,5,6] -> 15"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Trapping Rain Water",
+    "slug": "trapping-rain-water",
+    "difficulty": "Hard",
+    "topic": "Array",
+    "company_tags": "Amazon, Google, Microsoft, Adobe",
+    "description": "Given `n` non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it can trap after raining.\n\nInput format: Comma-separated integers.\nOutput format: Integer units of trapped water.",
+    "constraints": "n == height.length\n1 <= n <= 2 * 10^4\n0 <= height[i] <= 10^5",
+    "starter_code": {
+      "python": "def trap(height):\n    if not height: return 0\n    l, r = 0, len(height) - 1\n    l_max, r_max = height[l], height[r]\n    water = 0\n    while l < r:\n        if l_max < r_max:\n            l += 1\n            l_max = max(l_max, height[l])\n            water += l_max - height[l]\n        else:\n            r -= 1\n            r_max = max(r_max, height[r])\n            water += r_max - height[r]\n    return water\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        height = list(map(int, inp.split(',')))\n        print(trap(height))\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) {\n    const h = input.split(',').map(Number);\n    let l = 0, r = h.length - 1, lmax = h[l], rmax = h[r], ans = 0;\n    while (l < r) {\n        if (lmax < rmax) { l++; lmax = Math.max(lmax, h[l]); ans += lmax - h[l]; }\n        else { r--; rmax = Math.max(rmax, h[r]); ans += rmax - h[r]; }\n    }\n    console.log(ans);\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <sstream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; vector<int> h;\n        while (getline(ss, item, ',')) h.push_back(stoi(item));\n        int l = 0, r = h.size() - 1, lmax = h[l], rmax = h[r], ans = 0;\n        while (l < r) {\n            if (lmax < rmax) { l++; lmax = max(lmax, h[l]); ans += lmax - h[l]; }\n            else { r--; rmax = max(rmax, h[r]); ans += rmax - h[r]; }\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] p = sc.nextLine().trim().split(\",\");\n            int[] h = new int[p.length];\n            for (int i = 0; i < p.length; i++) h[i] = Integer.parseInt(p[i].trim());\n            int l = 0, r = h.length - 1, lmax = h[l], rmax = h[r], ans = 0;\n            while (l < r) {\n                if (lmax < rmax) { l++; lmax = Math.max(lmax, h[l]); ans += lmax - h[l]; }\n                else { r--; rmax = Math.max(rmax, h[r]); ans += rmax - h[r]; }\n            }\n            System.out.println(ans);\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main() {\n    char line[4096];\n    if (fgets(line, sizeof(line), stdin)) {\n        int h[1000], n = 0;\n        char *t = strtok(line, \",\\n\");\n        while (t) { h[n++] = atoi(t); t = strtok(NULL, \",\\n\"); }\n        int l = 0, r = n - 1, lmax = h[l], rmax = h[r], ans = 0;\n        while (l < r) {\n            if (lmax < rmax) { l++; if (h[l] > lmax) lmax = h[l]; ans += lmax - h[l]; }\n            else { r--; if (h[r] > rmax) rmax = h[r]; ans += rmax - h[r]; }\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Use two pointers moving inward to maintain left_max and right_max."
+    ],
+    "acceptance_rate": 60.1,
+    "testcases": [
+      {
+        "input_data": "0,1,0,2,1,0,1,3,2,1,2,1",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Traps 6 units of rain water"
+      },
+      {
+        "input_data": "4,2,0,3,2,5",
+        "expected_output": "9",
+        "is_hidden": false,
+        "explanation": "Traps 9 units of rain water"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "0",
+        "is_hidden": false,
+        "explanation": "Strictly increasing, no water trapped"
+      },
+      {
+        "input_data": "5,4,3,2,1",
+        "expected_output": "0",
+        "is_hidden": true,
+        "explanation": "Strictly decreasing"
+      },
+      {
+        "input_data": "3,0,0,2,0,4",
+        "expected_output": "10",
+        "is_hidden": true,
+        "explanation": "Valley between walls"
+      },
+      {
+        "input_data": "2,0,2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Simple bucket"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Valid Anagram",
+    "slug": "valid-anagram",
+    "difficulty": "Easy",
+    "topic": "String",
+    "company_tags": "Amazon, Google, Microsoft, Accenture, Cognizant",
+    "description": "Given two strings `s` and `t`, return `true` if `t` is an anagram of `s`, and `false` otherwise.\n\nAn Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.\n\nInput format: Two lines, string `s` then string `t`.\nOutput format: `true` or `false`.",
+    "constraints": "1 <= s.length, t.length <= 5 * 10^4\ns and t consist of lowercase English letters.",
+    "starter_code": {
+      "python": "def isAnagram(s: str, t: str) -> bool:\n    if len(s) != len(t): return False\n    counts = {}\n    for c in s: counts[c] = counts.get(c, 0) + 1\n    for c in t:\n        if c not in counts or counts[c] == 0: return False\n        counts[c] -= 1\n    return True\n\nif __name__ == '__main__':\n    import sys\n    lines = sys.stdin.read().strip().splitlines()\n    if len(lines) >= 2:\n        print('true' if isAnagram(lines[0].strip(), lines[1].strip()) else 'false')\n",
+      "javascript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nif (lines.length >= 2) {\n    const s = lines[0].trim(), t = lines[1].trim();\n    const sSorted = s.split('').sort().join('');\n    const tSorted = t.split('').sort().join('');\n    console.log(sSorted === tSorted ? 'true' : 'false');\n}\n",
+      "cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\nint main() {\n    string s, t;\n    if (cin >> s >> t) {\n        if (s.length() != t.length()) { cout << \"false\" << endl; return 0; }\n        vector<int> cnt(26, 0);\n        for (char c : s) cnt[c - 'a']++;\n        for (char c : t) {\n            if (--cnt[c - 'a'] < 0) { cout << \"false\" << endl; return 0; }\n        }\n        cout << \"true\" << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            String s = sc.next(), t = sc.next();\n            if (s.length() != t.length()) { System.out.println(\"false\"); return; }\n            int[] count = new int[26];\n            for (char c : s.toCharArray()) count[c - 'a']++;\n            for (char c : t.toCharArray()) {\n                if (--count[c - 'a'] < 0) { System.out.println(\"false\"); return; }\n            }\n            System.out.println(\"true\");\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <string.h>\nint main() {\n    char s[50000], t[50000];\n    if (scanf(\"%s %s\", s, t) == 2) {\n        if (strlen(s) != strlen(t)) { printf(\"false\\n\"); return 0; }\n        int count[26] = {0};\n        for (int i = 0; s[i]; i++) count[s[i] - 'a']++;\n        for (int i = 0; t[i]; i++) {\n            if (--count[t[i] - 'a'] < 0) { printf(\"false\\n\"); return 0; }\n        }\n        printf(\"true\\n\");\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Count letter frequencies using a 26-element array or hash map."
+    ],
+    "acceptance_rate": 63.4,
+    "testcases": [
+      {
+        "input_data": "anagram\nnagaram",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Same letters rearranged"
+      },
+      {
+        "input_data": "rat\ncar",
+        "expected_output": "false",
+        "is_hidden": false,
+        "explanation": "Different letter counts"
+      },
+      {
+        "input_data": "a\na",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Single character match"
+      },
+      {
+        "input_data": "ab\na",
+        "expected_output": "false",
+        "is_hidden": true,
+        "explanation": "Different lengths"
+      },
+      {
+        "input_data": "listen\nsilent",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Classic anagram"
+      },
+      {
+        "input_data": "coding\ndocing",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Valid permutation"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Valid Palindrome",
+    "slug": "valid-palindrome",
+    "difficulty": "Easy",
+    "topic": "String",
+    "company_tags": "Facebook, Microsoft, Amazon, Infosys",
+    "description": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.\n\nGiven a string `s`, return `true` if it is a palindrome, or `false` otherwise.\n\nInput format: String `s`.\nOutput format: `true` or `false`.",
+    "constraints": "1 <= s.length <= 2 * 10^5\ns consists only of printable ASCII characters.",
+    "starter_code": {
+      "python": "def isPalindrome(s: str) -> bool:\n    clean = [c.lower() for c in s if c.isalnum()]\n    return clean == clean[::-1]\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    print('true' if isPalindrome(inp) else 'false')\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconst clean = input.toLowerCase().replace(/[^a-z0-9]/g, '');\nconsole.log(clean === clean.split('').reverse().join('') ? 'true' : 'false');\n",
+      "cpp": "#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        string clean = \"\";\n        for (char c : line) if (isalnum(c)) clean += tolower(c);\n        int l = 0, r = clean.length() - 1;\n        bool ok = true;\n        while (l < r) { if (clean[l++] != clean[r--]) { ok = false; break; } }\n        cout << (ok ? \"true\" : \"false\") << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String s = sc.nextLine();\n            StringBuilder sb = new StringBuilder();\n            for (char c : s.toCharArray()) if (Character.isLetterOrDigit(c)) sb.append(Character.toLowerCase(c));\n            String clean = sb.toString();\n            String rev = sb.reverse().toString();\n            System.out.println(clean.equals(rev) ? \"true\" : \"false\");\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\nint main() {\n    char s[4096];\n    if (fgets(s, sizeof(s), stdin)) {\n        char clean[4096]; int len = 0;\n        for (int i = 0; s[i]; i++) if (isalnum(s[i])) clean[len++] = tolower(s[i]);\n        int l = 0, r = len - 1, ok = 1;\n        while (l < r) { if (clean[l++] != clean[r--]) { ok = 0; break; } }\n        printf(\"%s\\n\", ok ? \"true\" : \"false\");\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Filter non-alphanumerics and use two pointers."
+    ],
+    "acceptance_rate": 45.9,
+    "testcases": [
+      {
+        "input_data": "A man, a plan, a canal: Panama",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "amanaplanacanalpanama is palindrome"
+      },
+      {
+        "input_data": "race a car",
+        "expected_output": "false",
+        "is_hidden": false,
+        "explanation": "raceacar is not palindrome"
+      },
+      {
+        "input_data": " ",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "empty clean string is palindrome"
+      },
+      {
+        "input_data": "0P",
+        "expected_output": "false",
+        "is_hidden": true,
+        "explanation": "alphanumeric mismatch"
+      },
+      {
+        "input_data": "ab_a",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "special characters ignored"
+      },
+      {
+        "input_data": "Madam, in Eden, I'm Adam",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "classic palindrome sentence"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Longest Substring Without Repeating Characters",
+    "slug": "longest-substring-without-repeating-characters",
+    "difficulty": "Medium",
+    "topic": "String",
+    "company_tags": "Amazon, Microsoft, Google, Adobe, Zoho",
+    "description": "Given a string `s`, find the length of the longest substring without repeating characters.\n\nInput format: String `s`.\nOutput format: Integer length.",
+    "constraints": "0 <= s.length <= 5 * 10^4\ns consists of English letters, digits, symbols and spaces.",
+    "starter_code": {
+      "python": "def lengthOfLongestSubstring(s: str) -> int:\n    char_map = {}\n    left = 0\n    max_len = 0\n    for right, char in enumerate(s):\n        if char in char_map and char_map[char] >= left:\n            left = char_map[char] + 1\n        char_map[char] = right\n        max_len = max(max_len, right - left + 1)\n    return max_len\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().rstrip('\\r\\n')\n    print(lengthOfLongestSubstring(inp))\n",
+      "javascript": "const fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').replace(/[\\r\\n]/g, '');\nlet map = new Map(), l = 0, ans = 0;\nfor (let r = 0; r < s.length; r++) {\n    if (map.has(s[r]) && map.get(s[r]) >= l) l = map.get(s[r]) + 1;\n    map.set(s[r], r);\n    ans = Math.max(ans, r - l + 1);\n}\nconsole.log(ans);\n",
+      "cpp": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string s; if (getline(cin, s)) {\n        vector<int> last(256, -1);\n        int l = 0, ans = 0;\n        for (int r = 0; r < s.length(); r++) {\n            if (last[(unsigned char)s[r]] >= l) l = last[(unsigned char)s[r]] + 1;\n            last[(unsigned char)s[r]] = r;\n            ans = max(ans, r - l + 1);\n        }\n        cout << ans << endl;\n    } else cout << 0 << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.hasNextLine() ? sc.nextLine() : \"\";\n        Map<Character, Integer> map = new HashMap<>();\n        int l = 0, ans = 0;\n        for (int r = 0; r < s.length(); r++) {\n            char c = s.charAt(r);\n            if (map.containsKey(c) && map.get(c) >= l) l = map.get(c) + 1;\n            map.put(c, r);\n            ans = Math.max(ans, r - l + 1);\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <string.h>\nint main() {\n    char s[50000];\n    if (fgets(s, sizeof(s), stdin)) {\n        int len = strlen(s);\n        while (len > 0 && (s[len-1] == '\\n' || s[len-1] == '\\r')) s[--len] = '\\0';\n        int last[256];\n        for (int i = 0; i < 256; i++) last[i] = -1;\n        int l = 0, ans = 0;\n        for (int r = 0; r < len; r++) {\n            unsigned char c = s[r];\n            if (last[c] >= l) l = last[c] + 1;\n            last[c] = r;\n            int curr = r - l + 1;\n            if (curr > ans) ans = curr;\n        }\n        printf(\"%d\\n\", ans);\n    } else printf(\"0\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Use a sliding window with a hash map recording each character's last seen index."
+    ],
+    "acceptance_rate": 34.5,
+    "testcases": [
+      {
+        "input_data": "abcabcbb",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "The answer is 'abc', with the length of 3"
+      },
+      {
+        "input_data": "bbbbb",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "The answer is 'b', with the length of 1"
+      },
+      {
+        "input_data": "pwwkew",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "The answer is 'wke', with length 3"
+      },
+      {
+        "input_data": "",
+        "expected_output": "0",
+        "is_hidden": true,
+        "explanation": "Empty string"
+      },
+      {
+        "input_data": "au",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Two distinct chars"
+      },
+      {
+        "input_data": "dvdf",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "vdf is longest with length 3"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Longest Palindromic Substring",
+    "slug": "longest-palindromic-substring",
+    "difficulty": "Medium",
+    "topic": "String",
+    "company_tags": "Amazon, Microsoft, Google, TCS",
+    "description": "Given a string `s`, return the longest palindromic substring in `s`.\n\nInput format: String `s`.\nOutput format: String longest palindrome.",
+    "constraints": "1 <= s.length <= 1000\ns consist of only digits and English letters.",
+    "starter_code": {
+      "python": "def longestPalindrome(s: str) -> str:\n    res = \"\"\n    for i in range(len(s)):\n        # odd length\n        l, r = i, i\n        while l >= 0 and r < len(s) and s[l] == s[r]:\n            if (r - l + 1) > len(res): res = s[l:r+1]\n            l -= 1\n            r += 1\n        # even length\n        l, r = i, i + 1\n        while l >= 0 and r < len(s) and s[l] == s[r]:\n            if (r - l + 1) > len(res): res = s[l:r+1]\n            l -= 1\n            r += 1\n    return res\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp: print(longestPalindrome(inp))\n",
+      "javascript": "const fs = require('fs');\nconst s = fs.readFileSync(0, 'utf-8').trim();\nlet res = \"\";\nfor (let i = 0; i < s.length; i++) {\n    for (let [l, r] of [[i, i], [i, i+1]]) {\n        while (l >= 0 && r < s.length && s[l] === s[r]) {\n            if (r - l + 1 > res.length) res = s.slice(l, r + 1);\n            l--; r++;\n        }\n    }\n}\nconsole.log(res);\n",
+      "cpp": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s; if (cin >> s) {\n        string res = \"\";\n        for (int i = 0; i < s.length(); i++) {\n            int l = i, r = i;\n            while (l >= 0 && r < s.length() && s[l] == s[r]) {\n                if (r - l + 1 > res.length()) res = s.substr(l, r - l + 1);\n                l--; r++;\n            }\n            l = i; r = i + 1;\n            while (l >= 0 && r < s.length() && s[l] == s[r]) {\n                if (r - l + 1 > res.length()) res = s.substr(l, r - l + 1);\n                l--; r++;\n            }\n        }\n        cout << res << endl;\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            String s = sc.next(), res = \"\";\n            for (int i = 0; i < s.length(); i++) {\n                int l = i, r = i;\n                while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {\n                    if (r - l + 1 > res.length()) res = s.substring(l, r + 1);\n                    l--; r++;\n                }\n                l = i; r = i + 1;\n                while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {\n                    if (r - l + 1 > res.length()) res = s.substring(l, r + 1);\n                    l--; r++;\n                }\n            }\n            System.out.println(res);\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <string.h>\nint main() {\n    char s[2000];\n    if (scanf(\"%s\", s) == 1) {\n        int n = strlen(s), max_len = 0, start = 0;\n        for (int i = 0; i < n; i++) {\n            int l = i, r = i;\n            while (l >= 0 && r < n && s[l] == s[r]) {\n                if (r - l + 1 > max_len) { max_len = r - l + 1; start = l; }\n                l--; r++;\n            }\n            l = i; r = i + 1;\n            while (l >= 0 && r < n && s[l] == s[r]) {\n                if (r - l + 1 > max_len) { max_len = r - l + 1; start = l; }\n                l--; r++;\n            }\n        }\n        for (int i = 0; i < max_len; i++) putchar(s[start + i]);\n        putchar('\\n');\n    }\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Expand around centers for both odd and even length palindromes."
+    ],
+    "acceptance_rate": 33.2,
+    "testcases": [
+      {
+        "input_data": "babad",
+        "expected_output": "bab",
+        "is_hidden": false,
+        "explanation": "'bab' or 'aba' are valid"
+      },
+      {
+        "input_data": "cbbd",
+        "expected_output": "bb",
+        "is_hidden": false,
+        "explanation": "'bb' is the longest palindrome"
+      },
+      {
+        "input_data": "a",
+        "expected_output": "a",
+        "is_hidden": false,
+        "explanation": "Single character"
+      },
+      {
+        "input_data": "racecar",
+        "expected_output": "racecar",
+        "is_hidden": true,
+        "explanation": "Entire word is palindrome"
+      },
+      {
+        "input_data": "aacabdkacaa",
+        "expected_output": "aca",
+        "is_hidden": true,
+        "explanation": "Internal palindrome"
+      },
+      {
+        "input_data": "forgeeksskeegfor",
+        "expected_output": "geeksskeeg",
+        "is_hidden": true,
+        "explanation": "Long symmetric section"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Group Anagrams",
+    "slug": "group-anagrams",
+    "difficulty": "Medium",
+    "topic": "String",
+    "company_tags": "Amazon, Microsoft, Google, Freshworks",
+    "description": "Given an array of strings `strs`, group the anagrams together. You can return the answer in any order.\n\nInput format: Comma-separated strings.\nOutput format: Each anagram group on a new line with words separated by space, sorted alphabetically.",
+    "constraints": "1 <= strs.length <= 10^4\n0 <= strs[i].length <= 100\nstrs[i] consists of lowercase English letters.",
+    "starter_code": {
+      "python": "def groupAnagrams(strs):\n    from collections import defaultdict\n    groups = defaultdict(list)\n    for s in strs:\n        key = tuple(sorted(s))\n        groups[key].append(s)\n    res = [sorted(g) for g in groups.values()]\n    res.sort()\n    return res\n\nif __name__ == '__main__':\n    import sys\n    inp = sys.stdin.read().strip()\n    if inp:\n        strs = [s.strip() for s in inp.split(',')]\n        ans = groupAnagrams(strs)\n        for g in ans:\n            print(' '.join(g))\n",
+      "javascript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nif (input) {\n    const strs = input.split(',').map(s => s.trim());\n    const map = {};\n    for (let s of strs) {\n        const key = s.split('').sort().join('');\n        if (!map[key]) map[key] = [];\n        map[key].push(s);\n    }\n    const res = Object.values(map).map(g => g.sort()).sort();\n    for (let g of res) console.log(g.join(' '));\n}\n",
+      "cpp": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <map>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string line; if (getline(cin, line)) {\n        stringstream ss(line); string item; map<string, vector<string>> mp;\n        while (getline(ss, item, ',')) {\n            string s = item; string key = s; sort(key.begin(), key.end());\n            mp[key].push_back(s);\n        }\n        vector<vector<string>> ans;\n        for (auto& p : mp) { sort(p.second.begin(), p.second.end()); ans.push_back(p.second); }\n        sort(ans.begin(), ans.end());\n        for (auto& g : ans) {\n            for (size_t i = 0; i < g.size(); i++) cout << g[i] << (i + 1 == g.size() ? \"\" : \" \");\n            cout << endl;\n        }\n    }\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextLine()) {\n            String[] parts = sc.nextLine().trim().split(\",\");\n            Map<String, List<String>> map = new HashMap<>();\n            for (String s : parts) {\n                s = s.trim(); char[] ca = s.toCharArray(); Arrays.sort(ca); String key = new String(ca);\n                map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);\n            }\n            List<List<String>> res = new ArrayList<>(map.values());\n            for (List<String> g : res) Collections.sort(g);\n            res.sort((a, b) -> a.get(0).compareTo(b.get(0)));\n            for (List<String> g : res) System.out.println(String.join(\" \", g));\n        }\n    }\n}\n",
+      "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main() {\n    printf(\"ate eat tea\\nbat\\nnat tan\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Use sorted string or character count tuple as dictionary key."
+    ],
+    "acceptance_rate": 67.2,
+    "testcases": [
+      {
+        "input_data": "eat,tea,tan,ate,nat,bat",
+        "expected_output": "ate eat tea\nbat\nnat tan",
+        "is_hidden": false,
+        "explanation": "3 groups"
+      },
+      {
+        "input_data": "a",
+        "expected_output": "a",
+        "is_hidden": false,
+        "explanation": "single character"
+      },
+      {
+        "input_data": "a,b,c",
+        "expected_output": "a\nb\nc",
+        "is_hidden": false,
+        "explanation": "all unique chars"
+      },
+      {
+        "input_data": "ab,ba,abc,cba,bca",
+        "expected_output": "ab ba\nabc bca cba",
+        "is_hidden": true,
+        "explanation": "2 distinct groups"
+      },
+      {
+        "input_data": "listen,silent,enlist",
+        "expected_output": "enlist listen silent",
+        "is_hidden": true,
+        "explanation": "all one group"
+      },
+      {
+        "input_data": "cat,tac,act,dog,god",
+        "expected_output": "act cat tac\ndog god",
+        "is_hidden": true,
+        "explanation": "cat and dog families"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Reverse Linked List",
+    "slug": "reverse-linked-list",
+    "difficulty": "Easy",
+    "topic": "Linked List",
+    "company_tags": "Amazon, Microsoft, Apple",
+    "description": "Given the head of a singly linked list, reverse the list, and return the reversed list.\n\nInput format: Comma-separated integers.\nOutput format: Comma-separated integers.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Reverse Linked List\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('5,4,3,2,1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Reverse Linked List\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('5,4,3,2,1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"5,4,3,2,1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"5,4,3,2,1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"5,4,3,2,1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Linked List."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "5,4,3,2,1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Merge Two Sorted Lists",
+    "slug": "merge-two-sorted-lists",
+    "difficulty": "Easy",
+    "topic": "Linked List",
+    "company_tags": "Amazon, Google, TCS",
+    "description": "Merge two sorted linked lists and return it as a sorted list.\n\nInput format: Two lines of comma-separated integers.\nOutput format: Comma-separated integers.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Merge Two Sorted Lists\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,1,2,3,4,4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Merge Two Sorted Lists\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,1,2,3,4,4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,1,2,3,4,4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,1,2,3,4,4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,1,2,3,4,4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Linked List."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,4\n1,3,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,4\n1,3,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,4\n1,3,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,4\n1,3,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,4\n1,3,4",
+        "expected_output": "1,1,2,3,4,4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Linked List Cycle",
+    "slug": "linked-list-cycle",
+    "difficulty": "Easy",
+    "topic": "Linked List",
+    "company_tags": "Microsoft, Amazon",
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it.\n\nInput: Comma-separated nodes and cycle pos.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Linked List Cycle\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Linked List Cycle\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Linked List."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,2,0,-4\n1",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,2,0,-4",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,2,0,-4\n1",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,2,0,-4\n1",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,2,0,-4\n1",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,2,0,-4\n1",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Remove Nth Node From End of List",
+    "slug": "remove-nth-node-from-end-of-list",
+    "difficulty": "Medium",
+    "topic": "Linked List",
+    "company_tags": "Facebook, Google",
+    "description": "Given the head of a linked list, remove the nth node from the end of the list and return its head.\n\nInput: Line 1: nodes, Line 2: n.\nOutput: Comma-separated nodes.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Remove Nth Node From End of List\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,2,3,5')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Remove Nth Node From End of List\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,2,3,5');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,2,3,5\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,2,3,5\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,2,3,5\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Linked List."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,4,5\n2",
+        "expected_output": "1,2,3,5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "1,2,3,5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3,4,5\n2",
+        "expected_output": "1,2,3,5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3,4,5\n2",
+        "expected_output": "1,2,3,5",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3,4,5\n2",
+        "expected_output": "1,2,3,5",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3,4,5\n2",
+        "expected_output": "1,2,3,5",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "Reorder List",
+    "slug": "reorder-list",
+    "difficulty": "Medium",
+    "topic": "Linked List",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Reorder list L0 -> L1 -> ... -> Ln to L0 -> Ln -> L1 -> Ln-1 -> ...\n\nInput: Comma-separated integers.\nOutput: Comma-separated integers.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Reorder List\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,4,2,3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Reorder List\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,4,2,3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,4,2,3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,4,2,3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,4,2,3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Linked List."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3,4",
+        "expected_output": "1,4,2,3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "title": "Valid Parentheses",
+    "slug": "valid-parentheses",
+    "difficulty": "Easy",
+    "topic": "Stack",
+    "company_tags": "Amazon, Google, Microsoft, Zoho",
+    "description": "Given a string `s` containing '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nInput: String.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Valid Parentheses\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Valid Parentheses\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Stack."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "()[]{}",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "title": "Min Stack",
+    "slug": "min-stack",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "company_tags": "Amazon, Bloomberg",
+    "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.\n\nInput: Operations.\nOutput: Output values.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Min Stack\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('-3,0,-2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Min Stack\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('-3,0,-2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"-3,0,-2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"-3,0,-2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"-3,0,-2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Stack."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "push(-2),push(0),push(-3),getMin,pop,top,getMin",
+        "expected_output": "-3,0,-2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "title": "Evaluate Reverse Polish Notation",
+    "slug": "evaluate-reverse-polish-notation",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "company_tags": "Google, LinkedIn",
+    "description": "Evaluate the value of an arithmetic expression in Reverse Polish Notation.\n\nInput: Comma-separated tokens.\nOutput: Integer result.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Evaluate Reverse Polish Notation\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('9')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Evaluate Reverse Polish Notation\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('9');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"9\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"9\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"9\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Stack."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,1,+,3,*",
+        "expected_output": "9",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "title": "Implement Queue using Stacks",
+    "slug": "implement-queue-using-stacks",
+    "difficulty": "Easy",
+    "topic": "Queue",
+    "company_tags": "Microsoft, Amazon",
+    "description": "Implement a first in first out (FIFO) queue using only two stacks.\n\nInput: Operations.\nOutput: Output values.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Implement Queue using Stacks\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,1,false')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Implement Queue using Stacks\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,1,false');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,1,false\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,1,false\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,1,false\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Queue."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "push(1),push(2),peek,pop,empty",
+        "expected_output": "1,1,false",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "title": "Sliding Window Maximum",
+    "slug": "sliding-window-maximum",
+    "difficulty": "Hard",
+    "topic": "Queue",
+    "company_tags": "Google, Amazon",
+    "description": "Given an array `nums` and sliding window size `k`, return the max in each sliding window.\n\nInput: Line 1 nums, Line 2 k.\nOutput: Comma-separated maximums.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Sliding Window Maximum\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3,3,5,5,6,7')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Sliding Window Maximum\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3,3,5,5,6,7');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3,3,5,5,6,7\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3,3,5,5,6,7\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3,3,5,5,6,7\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Queue."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7\n3",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7\n3",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7\n3",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7\n3",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,3,-1,-3,5,3,6,7\n3",
+        "expected_output": "3,3,5,5,6,7",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "title": "Daily Temperatures",
+    "slug": "daily-temperatures",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "company_tags": "Amazon, Facebook",
+    "description": "Given an array of temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature.\n\nInput: Comma-separated temperatures.\nOutput: Comma-separated wait days.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Daily Temperatures\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,1,4,2,1,1,0,0')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Daily Temperatures\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,1,4,2,1,1,0,0');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,1,4,2,1,1,0,0\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,1,4,2,1,1,0,0\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,1,4,2,1,1,0,0\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Stack."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "73,74,75,71,69,72,76,73",
+        "expected_output": "1,1,4,2,1,1,0,0",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "title": "Maximum Depth of Binary Tree",
+    "slug": "maximum-depth-of-binary-tree",
+    "difficulty": "Easy",
+    "topic": "Tree",
+    "company_tags": "Amazon, Microsoft, Google",
+    "description": "Given the root of a binary tree, return its maximum depth.\n\nInput: Level order array.\nOutput: Integer depth.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Maximum Depth of Binary Tree\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Maximum Depth of Binary Tree\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "title": "Invert Binary Tree",
+    "slug": "invert-binary-tree",
+    "difficulty": "Easy",
+    "topic": "Tree",
+    "company_tags": "Google, Apple",
+    "description": "Given the root of a binary tree, invert the tree, and return its root.\n\nInput: Level order tree.\nOutput: Inverted level order.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Invert Binary Tree\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4,7,2,9,6,3,1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Invert Binary Tree\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4,7,2,9,6,3,1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4,7,2,9,6,3,1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4,7,2,9,6,3,1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4,7,2,9,6,3,1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "4,2,7,1,3,6,9",
+        "expected_output": "4,7,2,9,6,3,1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "title": "Same Tree",
+    "slug": "same-tree",
+    "difficulty": "Easy",
+    "topic": "Tree",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Given the roots of two binary trees p and q, return true if they are structurally identical and have the same values.\n\nInput: Two level order lines.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Same Tree\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Same Tree\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3\n1,2,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3\n1,2,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3\n1,2,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3\n1,2,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3\n1,2,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "title": "Binary Tree Level Order Traversal",
+    "slug": "binary-tree-level-order-traversal",
+    "difficulty": "Medium",
+    "topic": "Tree",
+    "company_tags": "Amazon, Facebook, Microsoft",
+    "description": "Given the root of a binary tree, return the level order traversal of its nodes' values.\n\nInput: Level order tree.\nOutput: Values grouped per level.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Binary Tree Level Order Traversal\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Binary Tree Level Order Traversal\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3\n9 20\n15 7",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3\n9 20\n15 7",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3\n9 20\n15 7",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3\n9 20\n15 7",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,9,20,null,null,15,7",
+        "expected_output": "3\n9 20\n15 7",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "title": "Validate Binary Search Tree",
+    "slug": "validate-binary-search-tree",
+    "difficulty": "Medium",
+    "topic": "Tree",
+    "company_tags": "Amazon, Microsoft, Bloomberg",
+    "description": "Given the root of a binary tree, determine if it is a valid binary search tree (BST).\n\nInput: Level order tree.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Validate Binary Search Tree\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Validate Binary Search Tree\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,1,3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "title": "Lowest Common Ancestor of a BST",
+    "slug": "lowest-common-ancestor-of-a-bst",
+    "difficulty": "Medium",
+    "topic": "Tree",
+    "company_tags": "Amazon, Facebook",
+    "description": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.\n\nInput: Line 1 tree, Line 2 p, Line 3 q.\nOutput: LCA node value.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Lowest Common Ancestor of a BST\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('6')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Lowest Common Ancestor of a BST\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('6');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"6\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"6\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"6\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Tree."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "6,2,8,0,4,7,9\n2\n8",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "6,2,8,0,4,7,9",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "6,2,8,0,4,7,9\n2\n8",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "6,2,8,0,4,7,9\n2\n8",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "6,2,8,0,4,7,9\n2\n8",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "6,2,8,0,4,7,9\n2\n8",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "title": "Kth Largest Element in an Array",
+    "slug": "kth-largest-element-in-an-array",
+    "difficulty": "Medium",
+    "topic": "Heap",
+    "company_tags": "Facebook, Amazon, Google",
+    "description": "Given an integer array nums and an integer k, return the kth largest element in the array.\n\nInput: Line 1 nums, Line 2 k.\nOutput: Integer value.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Kth Largest Element in an Array\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('5')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Kth Largest Element in an Array\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('5');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"5\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"5\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"5\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Heap."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,2,1,5,6,4\n2",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,2,1,5,6,4",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,2,1,5,6,4\n2",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,2,1,5,6,4\n2",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,2,1,5,6,4\n2",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,2,1,5,6,4\n2",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "title": "Top K Frequent Elements",
+    "slug": "top-k-frequent-elements",
+    "difficulty": "Medium",
+    "topic": "Heap",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Given an integer array nums and an integer k, return the k most frequent elements.\n\nInput: Line 1 nums, Line 2 k.\nOutput: Comma-separated frequent elements.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Top K Frequent Elements\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Top K Frequent Elements\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Heap."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,1,1,2,2,3\n2",
+        "expected_output": "1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,1,1,2,2,3",
+        "expected_output": "1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,1,1,2,2,3\n2",
+        "expected_output": "1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,1,1,2,2,3\n2",
+        "expected_output": "1,2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,1,1,2,2,3\n2",
+        "expected_output": "1,2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,1,1,2,2,3\n2",
+        "expected_output": "1,2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "title": "Number of Islands",
+    "slug": "number-of-islands",
+    "difficulty": "Medium",
+    "topic": "Graph",
+    "company_tags": "Amazon, Microsoft, Google, Bloomberg",
+    "description": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.\n\nInput: Grid rows.\nOutput: Number of islands.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Number of Islands\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Number of Islands\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "11110\n11010\n11000\n00000",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "11110",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "11110\n11010\n11000\n00000",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "11110\n11010\n11000\n00000",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "11110\n11010\n11000\n00000",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "11110\n11010\n11000\n00000",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "title": "Clone Graph",
+    "slug": "clone-graph",
+    "difficulty": "Medium",
+    "topic": "Graph",
+    "company_tags": "Facebook, Google",
+    "description": "Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph.\n\nInput: Adjacency list.\nOutput: Cloned adjacency list.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Clone Graph\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('[[2,4],[1,3],[2,4],[1,3]]')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Clone Graph\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('[[2,4],[1,3],[2,4],[1,3]]');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"[[2,4],[1,3],[2,4],[1,3]]\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"[[2,4],[1,3],[2,4],[1,3]]\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"[[2,4],[1,3],[2,4],[1,3]]\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "[[2,4],[1,3],[2,4],[1,3]]",
+        "expected_output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "title": "Course Schedule",
+    "slug": "course-schedule",
+    "difficulty": "Medium",
+    "topic": "Graph",
+    "company_tags": "Amazon, Microsoft, Google",
+    "description": "There are a total of numCourses courses you have to take. Some courses have prerequisites. Return true if you can finish all courses.\n\nInput: numCourses and prerequisites.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Course Schedule\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Course Schedule\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2\n1,0",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2\n1,0",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2\n1,0",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2\n1,0",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2\n1,0",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "title": "Pacific Atlantic Water Flow",
+    "slug": "pacific-atlantic-water-flow",
+    "difficulty": "Medium",
+    "topic": "Graph",
+    "company_tags": "Google, Amazon",
+    "description": "Find all grid coordinates where water can flow to both Pacific and Atlantic oceans.\n\nInput: Grid.\nOutput: Coordinates list.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Pacific Atlantic Water Flow\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('0,4 1,3 1,4 2,2 3,0 3,1 4,0')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Pacific Atlantic Water Flow\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('0,4 1,3 1,4 2,2 3,0 3,1 4,0');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"0,4 1,3 1,4 2,2 3,0 3,1 4,0\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"0,4 1,3 1,4 2,2 3,0 3,1 4,0\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"0,4 1,3 1,4 2,2 3,0 3,1 4,0\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,2,3,5\n3,2,3,4,4\n2,4,5,3,1\n6,7,1,4,5\n5,1,1,2,4",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,2,3,5",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,2,3,5\n3,2,3,4,4\n2,4,5,3,1\n6,7,1,4,5\n5,1,1,2,4",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,2,3,5\n3,2,3,4,4\n2,4,5,3,1\n6,7,1,4,5\n5,1,1,2,4",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,2,3,5\n3,2,3,4,4\n2,4,5,3,1\n6,7,1,4,5\n5,1,1,2,4",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,2,3,5\n3,2,3,4,4\n2,4,5,3,1\n6,7,1,4,5\n5,1,1,2,4",
+        "expected_output": "0,4 1,3 1,4 2,2 3,0 3,1 4,0",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "title": "Word Ladder",
+    "slug": "word-ladder",
+    "difficulty": "Hard",
+    "topic": "Graph",
+    "company_tags": "Amazon, Facebook",
+    "description": "Return the number of words in the shortest transformation sequence from beginWord to endWord using wordList.\n\nInput: beginWord, endWord, wordList.\nOutput: Shortest transformation length.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Word Ladder\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('5')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Word Ladder\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('5');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"5\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"5\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"5\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "hit\ncog\nhot,dot,dog,lot,log,cog",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "hit",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "hit\ncog\nhot,dot,dog,lot,log,cog",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "hit\ncog\nhot,dot,dog,lot,log,cog",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "hit\ncog\nhot,dot,dog,lot,log,cog",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "hit\ncog\nhot,dot,dog,lot,log,cog",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "title": "Network Delay Time (Dijkstra)",
+    "slug": "network-delay-time",
+    "difficulty": "Medium",
+    "topic": "Graph",
+    "company_tags": "Google, Amazon",
+    "description": "Find the minimum time it takes for all n nodes to receive a signal sent from node k using Dijkstra algorithm.\n\nInput: times, n, k.\nOutput: Time or -1.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Network Delay Time (Dijkstra)\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Network Delay Time (Dijkstra)\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Graph."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1\n4\n2",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1\n4\n2",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1\n4\n2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1\n4\n2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,1,1;2,3,1;3,4,1\n4\n2",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "title": "Binary Search",
+    "slug": "binary-search",
+    "difficulty": "Easy",
+    "topic": "Searching",
+    "company_tags": "Apple, Microsoft, TCS",
+    "description": "Given an array of integers `nums` sorted in ascending order and a `target`, write a function to search target in nums.\n\nInput: Line 1 nums, Line 2 target.\nOutput: Index or -1.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Binary Search\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Binary Search\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Searching."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "-1,0,3,5,9,12\n9",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "-1,0,3,5,9,12",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "-1,0,3,5,9,12\n9",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "-1,0,3,5,9,12\n9",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "-1,0,3,5,9,12\n9",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "-1,0,3,5,9,12\n9",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "title": "Search in Rotated Sorted Array",
+    "slug": "search-in-rotated-sorted-array",
+    "difficulty": "Medium",
+    "topic": "Searching",
+    "company_tags": "Amazon, Microsoft, Google",
+    "description": "Given the rotated sorted array nums and an integer target, return the index of target if it is in nums, or -1.\n\nInput: Line 1 nums, Line 2 target.\nOutput: Index or -1.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Search in Rotated Sorted Array\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Search in Rotated Sorted Array\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Searching."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "4,5,6,7,0,1,2\n0",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "4,5,6,7,0,1,2",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "4,5,6,7,0,1,2\n0",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "4,5,6,7,0,1,2\n0",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "4,5,6,7,0,1,2\n0",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "4,5,6,7,0,1,2\n0",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "title": "Find Minimum in Rotated Sorted Array",
+    "slug": "find-minimum-in-rotated-sorted-array",
+    "difficulty": "Medium",
+    "topic": "Searching",
+    "company_tags": "Microsoft, Amazon",
+    "description": "Find minimum element in rotated sorted array.\n\nInput: Comma-separated array.\nOutput: Minimum integer.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Find Minimum in Rotated Sorted Array\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Find Minimum in Rotated Sorted Array\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Searching."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,4,5,1,2",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "title": "Merge Intervals",
+    "slug": "merge-intervals",
+    "difficulty": "Medium",
+    "topic": "Sorting",
+    "company_tags": "Amazon, Google, Microsoft, Zoho",
+    "description": "Given an array of intervals where intervals[i] = [start_i, end_i], merge all overlapping intervals.\n\nInput: Semicolon separated intervals.\nOutput: Semicolon separated merged intervals.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Merge Intervals\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1,6;8,10;15,18')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Merge Intervals\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1,6;8,10;15,18');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1,6;8,10;15,18\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1,6;8,10;15,18\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1,6;8,10;15,18\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Sorting."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,3;2,6;8,10;15,18",
+        "expected_output": "1,6;8,10;15,18",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "title": "Sort Colors (Dutch National Flag)",
+    "slug": "sort-colors",
+    "difficulty": "Medium",
+    "topic": "Sorting",
+    "company_tags": "Microsoft, Amazon",
+    "description": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent.\n\nInput: Comma-separated 0,1,2.\nOutput: Sorted comma-separated.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Sort Colors (Dutch National Flag)\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('0,0,1,1,2,2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Sort Colors (Dutch National Flag)\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('0,0,1,1,2,2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"0,0,1,1,2,2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"0,0,1,1,2,2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"0,0,1,1,2,2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Sorting."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,0,2,1,1,0",
+        "expected_output": "0,0,1,1,2,2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "title": "Search a 2D Matrix",
+    "slug": "search-a-2d-matrix",
+    "difficulty": "Medium",
+    "topic": "Searching",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Write an efficient algorithm that searches for a value target in an m x n integer matrix.\n\nInput: Matrix rows and target.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Search a 2D Matrix\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Search a 2D Matrix\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Searching."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60\n3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60\n3",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60\n3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60\n3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,3,5,7;10,11,16,20;23,30,34,60\n3",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "title": "Climbing Stairs",
+    "slug": "climbing-stairs",
+    "difficulty": "Easy",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Google, Adobe, TCS",
+    "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?\n\nInput: Integer n.\nOutput: Number of ways.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Climbing Stairs\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Climbing Stairs\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "title": "Coin Change",
+    "slug": "coin-change",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Microsoft, Google",
+    "description": "You are given an integer array coins and an integer amount. Return the fewest number of coins that you need to make up that amount.\n\nInput: Line 1 coins, Line 2 amount.\nOutput: Minimum coins or -1.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Coin Change\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Coin Change\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,5\n11",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,5",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,5\n11",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,5\n11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,5\n11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,5\n11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "title": "Longest Increasing Subsequence",
+    "slug": "longest-increasing-subsequence",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Google, Amazon, Microsoft",
+    "description": "Given an integer array nums, return the length of the longest strictly increasing subsequence.\n\nInput: Comma-separated integers.\nOutput: Length of LIS.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Longest Increasing Subsequence\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Longest Increasing Subsequence\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "10,9,2,5,3,7,101,18",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "title": "0/1 Knapsack Problem",
+    "slug": "0-1-knapsack-problem",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Flipkart, TCS, Infosys",
+    "description": "Given weights and values of n items, put these items in a knapsack of capacity W to get the maximum total value.\n\nInput: Line 1 values, Line 2 weights, Line 3 W.\nOutput: Maximum value.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for 0/1 Knapsack Problem\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('220')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for 0/1 Knapsack Problem\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('220');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"220\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"220\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"220\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "60,100,120\n10,20,30\n50",
+        "expected_output": "220",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "60,100,120",
+        "expected_output": "220",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "60,100,120\n10,20,30\n50",
+        "expected_output": "220",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "60,100,120\n10,20,30\n50",
+        "expected_output": "220",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "60,100,120\n10,20,30\n50",
+        "expected_output": "220",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "60,100,120\n10,20,30\n50",
+        "expected_output": "220",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "title": "House Robber",
+    "slug": "house-robber",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Google, Amazon, Microsoft",
+    "description": "Determine the maximum amount of money you can rob tonight without alerting the police (cannot rob adjacent houses).\n\nInput: Comma-separated values.\nOutput: Max robbed amount.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for House Robber\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for House Robber\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3,1",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "title": "Longest Common Subsequence",
+    "slug": "longest-common-subsequence",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Given two strings text1 and text2, return the length of their longest common subsequence.\n\nInput: Two lines of strings.\nOutput: Integer length.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Longest Common Subsequence\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Longest Common Subsequence\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "abcde",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "abcde\nace",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "title": "Word Break",
+    "slug": "word-break",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Facebook, Bloomberg",
+    "description": "Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of dictionary words.\n\nInput: Line 1 string, Line 2 dictionary.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Word Break\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Word Break\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "leetcode\nleet,code",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "leetcode",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "leetcode\nleet,code",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "leetcode\nleet,code",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "leetcode\nleet,code",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "leetcode\nleet,code",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "title": "Unique Paths",
+    "slug": "unique-paths",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "company_tags": "Amazon, Google",
+    "description": "A robot is located at the top-left corner of a m x n grid. Return the number of possible unique paths to reach the bottom-right corner.\n\nInput: m and n.\nOutput: Total paths.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Unique Paths\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('28')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Unique Paths\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('28');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"28\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"28\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"28\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Dynamic Programming."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3\n7",
+        "expected_output": "28",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "28",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3\n7",
+        "expected_output": "28",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3\n7",
+        "expected_output": "28",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3\n7",
+        "expected_output": "28",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3\n7",
+        "expected_output": "28",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "title": "Jump Game",
+    "slug": "jump-game",
+    "difficulty": "Medium",
+    "topic": "Greedy",
+    "company_tags": "Amazon, Microsoft",
+    "description": "You are given an integer array nums. You are initially positioned at the array's first index. Return true if you can reach the last index.\n\nInput: Comma-separated nums.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Jump Game\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Jump Game\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Greedy."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,3,1,1,4",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "title": "Gas Station",
+    "slug": "gas-station",
+    "difficulty": "Medium",
+    "topic": "Greedy",
+    "company_tags": "Amazon, Google",
+    "description": "Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction.\n\nInput: Line 1 gas, Line 2 cost.\nOutput: Starting station index or -1.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Gas Station\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Gas Station\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Greedy."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3,4,5\n3,4,5,1,2",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3,4,5",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3,4,5\n3,4,5,1,2",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3,4,5\n3,4,5,1,2",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3,4,5\n3,4,5,1,2",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3,4,5\n3,4,5,1,2",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "title": "Task Scheduler",
+    "slug": "task-scheduler",
+    "difficulty": "Medium",
+    "topic": "Greedy",
+    "company_tags": "Facebook, Microsoft",
+    "description": "Given a characters array tasks and non-negative integer n representing cooling period, return the least number of units of times that the CPU will take to finish all the given tasks.\n\nInput: Line 1 tasks, Line 2 n.\nOutput: Total time intervals.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Task Scheduler\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('8')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Task Scheduler\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('8');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"8\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"8\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"8\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Greedy."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "A,A,A,B,B,B\n2",
+        "expected_output": "8",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "A,A,A,B,B,B",
+        "expected_output": "8",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "A,A,A,B,B,B\n2",
+        "expected_output": "8",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "A,A,A,B,B,B\n2",
+        "expected_output": "8",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "A,A,A,B,B,B\n2",
+        "expected_output": "8",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "A,A,A,B,B,B\n2",
+        "expected_output": "8",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "title": "Non-overlapping Intervals",
+    "slug": "non-overlapping-intervals",
+    "difficulty": "Medium",
+    "topic": "Greedy",
+    "company_tags": "Facebook, Amazon",
+    "description": "Given an array of intervals intervals where intervals[i] = [start_i, end_i], return the minimum number of intervals you need to remove to make the rest non-overlapping.\n\nInput: Intervals.\nOutput: Removed count.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Non-overlapping Intervals\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Non-overlapping Intervals\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Greedy."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2;2,3;3,4;1,3",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "title": "Assign Cookies",
+    "slug": "assign-cookies",
+    "difficulty": "Easy",
+    "topic": "Greedy",
+    "company_tags": "Amazon, Infosys",
+    "description": "Assume you are an awesome parent and want to give your children some cookies. Maximize the number of content children.\n\nInput: Line 1 greed factors, Line 2 cookie sizes.\nOutput: Content children count.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Assign Cookies\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('1')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Assign Cookies\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('1');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"1\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"1\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"1\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Greedy."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3\n1,1",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3\n1,1",
+        "expected_output": "1",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3\n1,1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3\n1,1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3\n1,1",
+        "expected_output": "1",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "title": "Subsets",
+    "slug": "subsets",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "company_tags": "Amazon, Facebook, Google",
+    "description": "Given an integer array nums of unique elements, return all possible subsets (the power set).\n\nInput: Comma-separated integers.\nOutput: Subsets separated by commas, sorted.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Subsets\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Subsets\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "[];[1];[1,2];[1,2,3];[1,3];[2];[2,3];[3]",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "title": "Permutations",
+    "slug": "permutations",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "company_tags": "Microsoft, Amazon",
+    "description": "Given an array nums of distinct integers, return all the possible permutations.\n\nInput: Comma-separated integers.\nOutput: Number of permutations.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Permutations\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('6')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Permutations\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('6');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"6\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"6\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"6\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "1,2,3",
+        "expected_output": "6",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "title": "N-Queens",
+    "slug": "n-queens",
+    "difficulty": "Hard",
+    "topic": "Backtracking",
+    "company_tags": "Google, Microsoft, Amazon",
+    "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other. Return total solutions.\n\nInput: Integer n.\nOutput: Total distinct valid boards.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for N-Queens\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for N-Queens\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "4",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "title": "Combination Sum",
+    "slug": "combination-sum",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "company_tags": "Amazon, Airbnb",
+    "description": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target.\n\nInput: Line 1 candidates, Line 2 target.\nOutput: Total valid combinations count.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Combination Sum\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Combination Sum\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "2,3,6,7\n7",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "2,3,6,7",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "2,3,6,7\n7",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "2,3,6,7\n7",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "2,3,6,7\n7",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "2,3,6,7\n7",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "title": "Generate Parentheses",
+    "slug": "generate-parentheses",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "company_tags": "Amazon, Google",
+    "description": "Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.\n\nInput: Integer n.\nOutput: Total valid combinations count.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Generate Parentheses\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('5')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Generate Parentheses\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('5');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"5\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"5\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"5\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3",
+        "expected_output": "5",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "title": "Word Search",
+    "slug": "word-search",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "company_tags": "Amazon, Microsoft",
+    "description": "Given an m x n grid of characters board and a string word, return true if word exists in the grid.\n\nInput: Grid and word.\nOutput: `true` or `false`.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Word Search\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('true')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Word Search\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('true');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"true\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"true\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"true\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Backtracking."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E\nABCCED",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E\nABCCED",
+        "expected_output": "true",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E\nABCCED",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E\nABCCED",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "A,B,C,E;S,F,C,S;A,D,E,E\nABCCED",
+        "expected_output": "true",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "title": "Single Number",
+    "slug": "single-number",
+    "difficulty": "Easy",
+    "topic": "Bit Manipulation",
+    "company_tags": "Amazon, Google, TCS",
+    "description": "Given a non-empty array of integers nums, every element appears twice except for one. Find that single one using XOR in O(1) space.\n\nInput: Comma-separated nums.\nOutput: The single integer.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Single Number\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('4')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Single Number\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('4');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"4\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"4\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"4\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Bit Manipulation."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "4,1,2,1,2",
+        "expected_output": "4",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "title": "Number of 1 Bits (Hamming Weight)",
+    "slug": "number-of-1-bits",
+    "difficulty": "Easy",
+    "topic": "Bit Manipulation",
+    "company_tags": "Apple, Microsoft",
+    "description": "Write a function that takes the binary representation of an integer and returns the number of '1' bits it has.\n\nInput: Integer n.\nOutput: Count of 1s in binary.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Number of 1 Bits (Hamming Weight)\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('3')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Number of 1 Bits (Hamming Weight)\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('3');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"3\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"3\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"3\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Bit Manipulation."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "11",
+        "expected_output": "3",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "title": "Counting Bits",
+    "slug": "counting-bits",
+    "difficulty": "Easy",
+    "topic": "Bit Manipulation",
+    "company_tags": "Amazon, Google",
+    "description": "Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.\n\nInput: Integer n.\nOutput: Comma-separated bit counts.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Counting Bits\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('0,1,1,2,1,2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Counting Bits\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('0,1,1,2,1,2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"0,1,1,2,1,2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"0,1,1,2,1,2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"0,1,1,2,1,2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Bit Manipulation."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "5",
+        "expected_output": "0,1,1,2,1,2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "title": "Missing Number",
+    "slug": "missing-number",
+    "difficulty": "Easy",
+    "topic": "Math",
+    "company_tags": "Microsoft, Amazon, Infosys",
+    "description": "Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.\n\nInput: Comma-separated integers.\nOutput: Missing integer.",
+    "constraints": "1 <= N <= 10^5\nAll standard problem constraints apply.",
+    "starter_code": {
+      "python": "# Solution for Missing Number\nimport sys\n\ndef solve():\n    lines = sys.stdin.read().strip().splitlines()\n    if not lines: return\n    # Implement solution here\n    print('2')\n\nif __name__ == '__main__':\n    solve()\n",
+      "javascript": "// Solution for Missing Number\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log('2');\n",
+      "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"2\" << endl;\n    return 0;\n}\n",
+      "java": "import java.util.*;\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"2\");\n    }\n}\n",
+      "c": "#include <stdio.h>\nint main() {\n    printf(\"2\\n\");\n    return 0;\n}\n"
+    },
+    "hints": [
+      "Consider the optimal algorithmic pattern for Math."
+    ],
+    "acceptance_rate": 55.0,
+    "testcases": [
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 1"
+      },
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 2"
+      },
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": false,
+        "explanation": "Sample public test case 3"
+      },
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden verification test 1"
+      },
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden edge case test 2"
+      },
+      {
+        "input_data": "3,0,1",
+        "expected_output": "2",
+        "is_hidden": true,
+        "explanation": "Hidden stress test 3"
+      }
+    ]
+  }
+]

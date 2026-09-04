@@ -1,0 +1,41 @@
+/* Admin Panel Styling */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - 58px);
+}
+
+@media (max-width: 768px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem 1rem;
+}
+
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 4px;
+    transition: all 0.15s ease;
+}
+
+.admin-nav-item:hover, .admin-nav-item.active {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.admin-content {
+    padding: 2rem;
+    overflow-y: auto;
+}

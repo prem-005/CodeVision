@@ -1,0 +1,36 @@
+/* Project Lab Styling */
+.project-ide {
+    display: grid;
+    grid-template-columns: 42% 1fr;
+    height: calc(100vh - 58px);
+    background: #0a0d14;
+}
+
+@media (max-width: 992px) {
+    .project-ide {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+}
+
+.milestone-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.milestone-item.completed {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.milestone-status-icon {
+    font-size: 1rem;
+    margin-top: 2px;
+}

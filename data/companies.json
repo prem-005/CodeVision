@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Amazon",
+    "slug": "amazon",
+    "tier": "FAANG / Big Tech",
+    "questions_count": 28,
+    "focus": "Arrays, Trees, Graphs, Dynamic Programming, System Design",
+    "description": "Focuses heavily on clean code, optimal algorithmic complexity, and Leadership Principles."
+  },
+  {
+    "name": "Google",
+    "slug": "google",
+    "tier": "FAANG / Big Tech",
+    "questions_count": 24,
+    "focus": "Graph Algorithms, Advanced DP, Recursion, Mathematical Puzzles",
+    "description": "Emphasizes innovative problem solving, edge case handling, and optimal asymptotic time/space bounds."
+  },
+  {
+    "name": "Microsoft",
+    "slug": "microsoft",
+    "tier": "Big Tech",
+    "questions_count": 22,
+    "focus": "Strings, Linked Lists, Trees, Stacks, Binary Search",
+    "description": "Values clean modular code, recursion clarity, and solid data structure fundamentals."
+  },
+  {
+    "name": "TCS",
+    "slug": "tcs",
+    "tier": "Service / IT Leader",
+    "questions_count": 35,
+    "focus": "Arrays, Strings, Number Theory, Basic Sorting & Searching",
+    "description": "Focuses on speed, algorithmic correctness, and foundational programming aptitude."
+  },
+  {
+    "name": "Infosys",
+    "slug": "infosys",
+    "tier": "Service / IT Leader",
+    "questions_count": 30,
+    "focus": "Array manipulation, String matching, Hash Maps, Greedy",
+    "description": "Tests problem comprehension, logical correctness, and time efficiency."
+  },
+  {
+    "name": "Wipro",
+    "slug": "wipro",
+    "tier": "Service / IT Leader",
+    "questions_count": 25,
+    "focus": "Basic DSA, Loops, Conditionals, Array Operations",
+    "description": "Aptitude and foundational coding problems testing core syntax and loops."
+  },
+  {
+    "name": "Accenture",
+    "slug": "accenture",
+    "tier": "Consulting & Tech",
+    "questions_count": 26,
+    "focus": "Bitwise operations, Strings, Arrays, Basic Math",
+    "description": "Standard placement coding assessments testing speed and edge-case accuracy."
+  },
+  {
+    "name": "Cognizant",
+    "slug": "cognizant",
+    "tier": "IT Services",
+    "questions_count": 22,
+    "focus": "Searching, Sorting, String Palindromes, Matrix Traversal",
+    "description": "Campus recruitment questions focusing on standard DSA patterns."
+  },
+  {
+    "name": "Zoho",
+    "slug": "zoho",
+    "tier": "Product Leader",
+    "questions_count": 20,
+    "focus": "Pointers, Bit Manipulation, String Parsing, Custom Data Structures",
+    "description": "Known for in-depth programming rounds, C-style low level logic, and no-library implementation."
+  },
+  {
+    "name": "Freshworks",
+    "slug": "freshworks",
+    "tier": "SaaS Product",
+    "questions_count": 18,
+    "focus": "OOP, Hash Tables, System Logic, REST APIs, Stacks",
+    "description": "Evaluates clean code, design patterns, and full-stack software development logic."
+  }
+]

@@ -1,0 +1,287 @@
+[
+  {
+    "id": 1,
+    "title": "Expense Tracker CLI & Core Engine",
+    "slug": "expense-tracker",
+    "category": "Software Engineering",
+    "difficulty": "Beginner",
+    "description": "Build an expense management system that allows users to record daily income and expenses, calculate running balances, filter transactions by category, and generate financial reports.",
+    "scenario": "A growing small business needs an automated engine to track daily cash flows, categorize receipts, calculate tax breakdowns, and summarize financial health.",
+    "objective": "Design clean OOP classes (Transaction, ExpenseTracker) with transaction persistence, mathematical balance calculations, and search filters.",
+    "requirements": "1. Add transaction with id, description, amount, type ('income'/'expense'), and category.\n2. Delete transaction by id.\n3. Calculate total income, total expense, and net balance.\n4. Filter transactions by category.\n5. Generate summary report formatted cleanly.",
+    "constraints": "Amounts must be non-negative. Transaction IDs must be unique strings or integers.",
+    "skills_covered": "Python, OOP, Data Modeling, Clean Code, Exception Handling",
+    "points_reward": 100,
+    "starter_code": {
+      "python": "class ExpenseTracker:\n    def __init__(self):\n        # Initialize internal storage for transactions\n        self.transactions = []\n\n    def add_transaction(self, id, description, amount, tx_type, category):\n        \"\"\"\n        Record a new transaction.\n        tx_type: 'income' or 'expense'\n        \"\"\"\n        # TODO: Implement add transaction logic\n        pass\n\n    def delete_transaction(self, id):\n        \"\"\"\n        Delete a transaction by id. Return True if deleted, False otherwise.\n        \"\"\"\n        # TODO: Implement delete transaction logic\n        pass\n\n    def get_summary(self):\n        \"\"\"\n        Calculate total income, expenses, and net balance.\n        Returns: {'income': float, 'expense': float, 'balance': float}\n        \"\"\"\n        # TODO: Implement financial calculation logic\n        return {'income': 0.0, 'expense': 0.0, 'balance': 0.0}\n\nif __name__ == '__main__':\n    # Test your implementation\n    tracker = ExpenseTracker()\n    tracker.add_transaction(1, 'Salary', 5000, 'income', 'Work')\n    tracker.add_transaction(2, 'Groceries', 200, 'expense', 'Food')\n    summary = tracker.get_summary()\n    print(f'Income: {summary[\"income\"]}, Expense: {summary[\"expense\"]}, Balance: {summary[\"balance\"]}')\n"
+    },
+    "milestones": [
+      {
+        "order": 1,
+        "title": "Milestone 1: Add and Store Transactions",
+        "description": "Implement add_transaction with proper validation.",
+        "validation_key": "add_transaction"
+      },
+      {
+        "order": 2,
+        "title": "Milestone 2: Delete and Find Transactions",
+        "description": "Implement delete_transaction by ID.",
+        "validation_key": "delete_transaction"
+      },
+      {
+        "order": 3,
+        "title": "Milestone 3: Financial Aggregations",
+        "description": "Calculate total income, expenses, and net balance.",
+        "validation_key": "get_summary"
+      },
+      {
+        "order": 4,
+        "title": "Milestone 4: Category Filtering & Reports",
+        "description": "Filter expenses by category and output formatted report.",
+        "validation_key": "category_filter"
+      }
+    ],
+    "testcases": [
+      {
+        "name": "Public: Basic Add and Balance",
+        "input_data": "add:1,Salary,5000,income,Work\nadd:2,Groceries,200,expense,Food\nsummary",
+        "expected_output": "Income: 5000.0, Expense: 200.0, Balance: 4800.0",
+        "is_hidden": false
+      },
+      {
+        "name": "Public: Delete Transaction",
+        "input_data": "add:1,Salary,5000,income,Work\ndelete:1\nsummary",
+        "expected_output": "Income: 0.0, Expense: 0.0, Balance: 0.0",
+        "is_hidden": false
+      },
+      {
+        "name": "Hidden: Zero Balance Edge Case",
+        "input_data": "add:1,A,100,income,X\nadd:2,B,100,expense,X\nsummary",
+        "expected_output": "Income: 100.0, Expense: 100.0, Balance: 0.0",
+        "is_hidden": true
+      },
+      {
+        "name": "Hidden: Multiple Category Expenses",
+        "input_data": "add:1,A,50,expense,Rent\nadd:2,B,70,expense,Food\nsummary",
+        "expected_output": "Income: 0.0, Expense: 120.0, Balance: -120.0",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Student Management System",
+    "slug": "student-management-system",
+    "category": "Software Engineering",
+    "difficulty": "Beginner",
+    "description": "Create an object-oriented student records system that supports adding students, enrolling them in courses, calculating GPA, generating report cards, and ranking class toppers.",
+    "scenario": "A university department requires a modular registry to track student grades, credit points, and semester standings.",
+    "objective": "Build Student and Gradebook entities with methods for course enrollment, grade point averaging, and student queries.",
+    "requirements": "1. Add student with roll_number, name, and department.\n2. Add course grades with credit hours.\n3. Compute weighted GPA.\n4. Identify top scoring students.\n5. Search student by roll number.",
+    "constraints": "Grade points: A=4, B=3, C=2, D=1, F=0.",
+    "skills_covered": "Python, OOP, Data Structures, Algorithms, Statistics",
+    "points_reward": 100,
+    "starter_code": {
+      "python": "class StudentRegistry:\n    def __init__(self):\n        # Initialize student records map\n        self.students = {}\n\n    def add_student(self, roll_no, name, dept):\n        \"\"\"\n        Register a student with roll_no, name, and department.\n        \"\"\"\n        # TODO: Implement student registration\n        pass\n\n    def add_grade(self, roll_no, course, credits, grade_point):\n        \"\"\"\n        Add a course grade entry for a student.\n        \"\"\"\n        # TODO: Add course grade details\n        pass\n\n    def calculate_gpa(self, roll_no):\n        \"\"\"\n        Compute weighted GPA: sum(credits * grade_point) / sum(credits)\n        \"\"\"\n        # TODO: Calculate weighted GPA\n        return 0.0\n\nif __name__ == '__main__':\n    reg = StudentRegistry()\n    reg.add_student('101', 'Alice', 'CSE')\n    reg.add_grade('101', 'Data Structures', 4, 4.0)\n    reg.add_grade('101', 'Algorithms', 4, 3.5)\n    print(f'GPA: {reg.calculate_gpa(\"101\")}')\n"
+    },
+    "milestones": [
+      {
+        "order": 1,
+        "title": "Milestone 1: Student Enrollment",
+        "description": "Register student records.",
+        "validation_key": "add_student"
+      },
+      {
+        "order": 2,
+        "title": "Milestone 2: Course & Grade Management",
+        "description": "Add course credits and grade points.",
+        "validation_key": "add_grade"
+      },
+      {
+        "order": 3,
+        "title": "Milestone 3: GPA Calculation",
+        "description": "Calculate accurate weighted GPA.",
+        "validation_key": "calculate_gpa"
+      }
+    ],
+    "testcases": [
+      {
+        "name": "Public: Basic Enrollment and GPA",
+        "input_data": "101,Alice,CSE\nDS,4,4.0\nAlgo,4,3.5",
+        "expected_output": "GPA: 3.75",
+        "is_hidden": false
+      },
+      {
+        "name": "Public: Single Course Perfect GPA",
+        "input_data": "102,Bob,ECE\nMath,3,4.0",
+        "expected_output": "GPA: 4.0",
+        "is_hidden": false
+      },
+      {
+        "name": "Hidden: Non-existent Student",
+        "input_data": "999",
+        "expected_output": "GPA: 0.0",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Educational ML: House Price Prediction Engine",
+    "slug": "house-price-prediction",
+    "category": "Automation",
+    "difficulty": "Intermediate",
+    "description": "Implement a machine learning regression pipeline with feature normalization, gradient descent linear regression, train-test splitting, and evaluation metrics (MSE, R2 score).",
+    "scenario": "A real estate analytics firm needs an explainable ML model to estimate property values based on square footage, bedrooms, and location metrics.",
+    "objective": "Build from scratch: feature scaling, matrix hypothesis prediction, loss computation, gradient descent optimizer, and evaluation.",
+    "requirements": "1. Fit Linear Regression with learning rate alpha and iterations.\n2. Standardize features (Z-score normalization).\n3. Compute Mean Squared Error (MSE).\n4. Predict prices on unseen test feature vectors.",
+    "constraints": "Do not rely solely on blackbox libraries; build core regression mathematics cleanly.",
+    "skills_covered": "Python, Machine Learning, Linear Algebra, Statistics, Data Modeling",
+    "points_reward": 200,
+    "starter_code": {
+      "python": "class HousePriceModel:\n    def __init__(self, learning_rate=0.01, iterations=1000):\n        self.lr = learning_rate\n        self.iters = iterations\n        self.weights = []\n        self.bias = 0.0\n\n    def fit(self, X, y):\n        \"\"\"\n        Train Linear Regression model using gradient descent.\n        X: List of feature vectors [[sqft, bedrooms], ...]\n        y: List of target price values [price1, price2, ...]\n        \"\"\"\n        # TODO: Implement gradient descent optimization\n        pass\n\n    def predict(self, X):\n        \"\"\"\n        Predict target values for feature vectors X.\n        \"\"\"\n        # TODO: Implement matrix hypothesis predictions\n        return [0.0] * len(X)\n\nif __name__ == '__main__':\n    X = [[1.0, 2.0], [2.0, 3.0], [3.0, 3.0], [4.0, 4.0]]\n    y = [200.0, 300.0, 350.0, 450.0]\n    model = HousePriceModel(learning_rate=0.05, iterations=500)\n    model.fit(X, y)\n    preds = model.predict([[2.5, 3.0]])\n    print(f'Predicted: {round(preds[0], 1) if preds else 0.0}')\n"
+    },
+    "milestones": [
+      {
+        "order": 1,
+        "title": "Milestone 1: Hypothesis & Loss Function",
+        "description": "Implement linear prediction and MSE computation.",
+        "validation_key": "hypothesis"
+      },
+      {
+        "order": 2,
+        "title": "Milestone 2: Gradient Descent Optimization",
+        "description": "Update weights iteratively with gradients.",
+        "validation_key": "gradient_descent"
+      },
+      {
+        "order": 3,
+        "title": "Milestone 3: Model Evaluation (R2 Score)",
+        "description": "Evaluate model fit and generalization on test set.",
+        "validation_key": "evaluate"
+      }
+    ],
+    "testcases": [
+      {
+        "name": "Public: Linear Trend Prediction",
+        "input_data": "train_size:4\npredict:2.5,3.0",
+        "expected_output": "Predicted: 325.0",
+        "is_hidden": false
+      },
+      {
+        "name": "Hidden: Exact Interpolation",
+        "input_data": "predict:1.0,2.0",
+        "expected_output": "Predicted: 200.0",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Educational ML: Spam SMS Classifier",
+    "slug": "spam-detection-engine",
+    "category": "Automation",
+    "difficulty": "Intermediate",
+    "description": "Build a Naive Bayes Natural Language Processing text classifier to detect spam SMS messages with vocabulary tokenization, term frequencies, and Laplace smoothing.",
+    "scenario": "A telecommunications platform requires a lightweight text classifier to filter spam and phishing SMS before delivery to users.",
+    "objective": "Build text preprocessing (lowercasing, punctuation stripping), bag-of-words representation, and Multinomial Naive Bayes probabilistic classification.",
+    "requirements": "1. Tokenize messages into clean word lists.\n2. Compute prior probabilities P(Spam) and P(Ham).\n3. Compute likelihood P(word|class) with Laplace smoothing (alpha=1).\n4. Predict class label ('spam' or 'ham') for input text.",
+    "constraints": "Handle unknown words gracefully with Laplace smoothing.",
+    "skills_covered": "Python, Machine Learning, NLP, Probability, Text Processing",
+    "points_reward": 200,
+    "starter_code": {
+      "python": "class NaiveBayesSpamClassifier:\n    def __init__(self):\n        self.vocab = set()\n        self.p_spam = 0.5\n        self.p_ham = 0.5\n\n    def tokenize(self, text):\n        \"\"\"\n        Tokenize and clean message into alphanumeric lowercase words.\n        \"\"\"\n        # TODO: Implement text preprocessing & tokenization\n        return [w.lower() for w in text.split() if w.isalnum()]\n\n    def train(self, messages, labels):\n        \"\"\"\n        Train Naive Bayes model with Laplace smoothing.\n        \"\"\"\n        # TODO: Compute prior and likelihood word frequencies\n        pass\n\n    def predict(self, text):\n        \"\"\"\n        Predict whether text message is 'spam' or 'ham'.\n        \"\"\"\n        # TODO: Compute log-posterior probability and return classification\n        return 'ham'\n\nif __name__ == '__main__':\n    data = [('Win cash prize now', 'spam'), ('Free lottery ticket', 'spam'), ('Hey are we meeting today', 'ham'), ('Call mom later', 'ham')]\n    clf = NaiveBayesSpamClassifier()\n    clf.train([d[0] for d in data], [d[1] for d in data])\n    print(f'Prediction: {clf.predict(\"Win prize free\")}')\n"
+    },
+    "milestones": [
+      {
+        "order": 1,
+        "title": "Milestone 1: Tokenizer and Bag of Words",
+        "description": "Preprocess text and build vocabulary.",
+        "validation_key": "tokenization"
+      },
+      {
+        "order": 2,
+        "title": "Milestone 2: Prior and Likelihood Estimation",
+        "description": "Calculate probabilities with Laplace smoothing.",
+        "validation_key": "probabilities"
+      },
+      {
+        "order": 3,
+        "title": "Milestone 3: Log-Posterior Prediction",
+        "description": "Predict classes with numerical stability.",
+        "validation_key": "prediction"
+      }
+    ],
+    "testcases": [
+      {
+        "name": "Public: Obvious Spam",
+        "input_data": "Win prize free",
+        "expected_output": "Prediction: spam",
+        "is_hidden": false
+      },
+      {
+        "name": "Public: Regular Chat Ham",
+        "input_data": "Hey are we meeting",
+        "expected_output": "Prediction: ham",
+        "is_hidden": false
+      },
+      {
+        "name": "Hidden: Unknown Words with Spam Keyword",
+        "input_data": "Exclusive lottery deal for you",
+        "expected_output": "Prediction: spam",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "URL Shortener Microservice & Hash Engine",
+    "slug": "url-shortener",
+    "category": "Backend",
+    "difficulty": "Intermediate",
+    "description": "Design a high-throughput URL shortening service using Base62 encoding, custom aliases, click analytics, and TTL expiration.",
+    "scenario": "A social network needs a low-latency redirection engine that converts long URLs into compact 6-character links and tracks redirect traffic.",
+    "objective": "Implement Base62 bi-directional conversions, collision handling, hit counter analytics, and cache-assisted lookups.",
+    "requirements": "1. Shorten URL with Base62 ID encoding.\n2. Support custom alias with uniqueness check.\n3. Redirect short URL to original destination.\n4. Track total click count and referrers.",
+    "constraints": "Short code length between 6-8 characters.",
+    "skills_covered": "Python, Hashing, Base62, System Design, REST Principles",
+    "points_reward": 200,
+    "starter_code": {
+      "python": "class URLShortener:\n    def __init__(self):\n        self.url_map = {}\n        self.code_map = {}\n        self.clicks = {}\n\n    def shorten(self, original_url, custom_alias=None):\n        \"\"\"\n        Shorten original_url using Base62 encoding or custom_alias.\n        Returns: (success_bool, code_or_error_message)\n        \"\"\"\n        # TODO: Implement Base62 shortener logic & alias checking\n        pass\n\n    def resolve(self, code):\n        \"\"\"\n        Resolve short code to original destination URL and increment clicks.\n        Returns: original_url string or None\n        \"\"\"\n        # TODO: Implement resolve logic\n        pass\n\nif __name__ == '__main__':\n    shortener = URLShortener()\n    ok, code = shortener.shorten('https://codevision.ai/learn')\n    print(f'Short code: {code}')\n    print(f'Resolved: {shortener.resolve(code)}')\n"
+    },
+    "milestones": [
+      {
+        "order": 1,
+        "title": "Milestone 1: Base62 Encoders",
+        "description": "Implement number to Base62 conversion.",
+        "validation_key": "base62"
+      },
+      {
+        "order": 2,
+        "title": "Milestone 2: Shortening and Alias Logic",
+        "description": "Generate unique short codes and validate custom aliases.",
+        "validation_key": "shorten"
+      },
+      {
+        "order": 3,
+        "title": "Milestone 3: Redirection & Analytics",
+        "description": "Resolve codes and increment click counters.",
+        "validation_key": "resolve"
+      }
+    ],
+    "testcases": [
+      {
+        "name": "Public: Shorten and Resolve",
+        "input_data": "https://codevision.ai/learn",
+        "expected_output": "Resolved: https://codevision.ai/learn",
+        "is_hidden": false
+      },
+      {
+        "name": "Hidden: Custom Alias Conflict",
+        "input_data": "alias:custom1",
+        "expected_output": "Resolved: https://codevision.ai/learn",
+        "is_hidden": true
+      }
+    ]
+  }
+]

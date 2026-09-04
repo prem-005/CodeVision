@@ -1,0 +1,100 @@
+/* CodeVision - LeetCode Style IDE Layout */
+.ide-container {
+    display: grid;
+    grid-template-columns: 38% 1fr 340px;
+    height: calc(100vh - 58px);
+    background: #0a0d14;
+    overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+    .ide-container {
+        grid-template-columns: 45% 1fr;
+    }
+    .ide-panel-right {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .ide-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+    }
+}
+
+.ide-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-right: 1px solid var(--border-color);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+
+.ide-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.ide-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+}
+
+.monaco-wrapper {
+    flex: 1;
+    position: relative;
+    background: #1e1e1e;
+}
+
+.ide-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--bg-sidebar);
+    border-top: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+}
+
+.testcase-pill {
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border-color);
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+.testcase-pill.active {
+    background: var(--bg-elevated);
+    border-color: var(--primary-accent);
+    color: var(--text-primary);
+    font-weight: 600;
+}
