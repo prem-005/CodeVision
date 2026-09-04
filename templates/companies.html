@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Company-Wise Questions &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="text-light fw-bold mb-1">Company-Wise Practice</h2>
+        <p class="text-secondary mb-0">Curated question tracks for Top Tech and IT Placement drives. Tagged as <em>Company-tagged practice</em>.</p>
+    </div>
+
+    <div class="row g-4" id="companies-grid">
+        <div class="col-12 text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading companies...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await CodeVision.api('/api/companies');
+    const grid = document.getElementById('companies-grid');
+    if (res.success && res.companies) {
+        grid.innerHTML = '';
+        res.companies.forEach(c => {
+            grid.innerHTML += `
+                <div class="col-md-6 col-lg-4">
+                    <div class="cv-card cv-card-interactive p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-warning text-dark font-monospace">${c.tier}</span>
+                                <span class="text-secondary small font-monospace">${c.questions_count} Problems</span>
+                            </div>
+                            <h4 class="text-light fw-bold mb-2">${c.name}</h4>
+                            <p class="text-secondary small mb-3">${c.description}</p>
+                            <div class="text-info small mb-3"><i class="fas fa-bullseye me-1"></i>Focus: ${c.focus}</div>
+                        </div>
+                        <div class="pt-2 border-top border-dark">
+                            <a href="/problems?company=${c.name}" class="cv-btn cv-btn-primary cv-btn-sm w-100">Practice ${c.name} Questions</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+});
+</script>
+{% endblock %}

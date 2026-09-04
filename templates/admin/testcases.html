@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Manage Testcases &mdash; Admin{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="admin-sidebar">
+        <h6 class="text-warning fw-bold px-2 mb-3"><i class="fas fa-shield-alt me-2"></i>Admin Console</h6>
+        <a href="/admin" class="admin-nav-item"><i class="fas fa-chart-line"></i>Overview</a>
+        <a href="/admin/problems" class="admin-nav-item"><i class="fas fa-code"></i>Manage Problems</a>
+        <a href="/admin/testcases" class="admin-nav-item active"><i class="fas fa-vial"></i>Test Cases</a>
+        <a href="/admin/users" class="admin-nav-item"><i class="fas fa-users"></i>Manage Users</a>
+        <a href="/admin/analytics" class="admin-nav-item"><i class="fas fa-chart-bar"></i>System Analytics</a>
+    </div>
+    <div class="admin-content">
+        <h3 class="text-light fw-bold mb-4">Test Case Generator & Management</h3>
+        <div class="cv-card p-4" style="max-width: 680px;">
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Problem ID</label>
+                <input type="number" id="tc-prob-id" class="cv-input" value="1">
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Input Data (stdin)</label>
+                <textarea id="tc-input" class="cv-input font-monospace small" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Expected Output (stdout)</label>
+                <textarea id="tc-output" class="cv-input font-monospace small" rows="2"></textarea>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="tc-hidden">
+                <label class="form-check-label text-secondary small" for="tc-hidden">Is Hidden Test Case (Strictly protected)</label>
+            </div>
+            <button type="button" class="cv-btn cv-btn-primary" onclick="addTestCase()">Add Test Case</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function addTestCase() {
+    const data = {
+        problem_id: parseInt(document.getElementById('tc-prob-id').value),
+        input_data: document.getElementById('tc-input').value,
+        expected_output: document.getElementById('tc-output').value,
+        is_hidden: document.getElementById('tc-hidden').checked
+    };
+    const res = await CodeVision.api('/admin/api/testcases', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+    if (res.success) {
+        CodeVision.toast('Testcase added successfully', 'success');
+        document.getElementById('tc-input').value = '';
+        document.getElementById('tc-output').value = '';
+    } else {
+        CodeVision.toast(res.error || 'Failed to add testcase', 'error');
+    }
+}
+</script>
+{% endblock %}

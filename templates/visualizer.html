@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Code Execution Visualizer — CodeVision{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- Top Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary-subtle">
+        <div class="d-flex align-items-center gap-3">
+            <h4 class="fw-bold text-light mb-0">
+                <i class="fa-solid fa-code text-warning me-2"></i>Code Execution Visualizer
+            </h4>
+            <select id="viz-language-select" class="cv-select text-warning font-monospace fw-bold" style="width: 140px;">
+                <option value="python">Python 3</option>
+                <option value="javascript">Node.js</option>
+                <option value="cpp">C++ 17</option>
+                <option value="c">C (GCC)</option>
+                <option value="java">Java 17</option>
+            </select>
+            <button class="cv-btn cv-btn-primary px-3 py-2" onclick="onRunCodeTrace()">
+                <i class="fa-solid fa-play me-1"></i>Visualize Code
+            </button>
+        </div>
+
+        <!-- Step Playback Controls -->
+        <div class="d-flex align-items-center gap-2">
+            <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="firstStep()" title="First Step"><i class="fas fa-fast-backward"></i></button>
+            <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="prevStep()" title="Previous Step"><i class="fas fa-step-backward"></i></button>
+            <button class="cv-btn cv-btn-primary cv-btn-sm px-3" onclick="togglePlay()" id="play-btn" title="Play / Pause"><i class="fas fa-play"></i></button>
+            <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="nextStep()" title="Next Step"><i class="fas fa-step-forward"></i></button>
+            <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="lastStep()" title="Last Step"><i class="fas fa-fast-forward"></i></button>
+
+            <!-- Slider -->
+            <input type="range" class="form-range mx-2" id="step-slider" min="0" max="0" value="0" style="width: 140px;" oninput="renderTraceStep(parseInt(this.value))">
+            <span class="badge bg-secondary font-monospace" id="step-counter">Step 0 / 0</span>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="row g-3">
+        <!-- Left: Code Editor -->
+        <div class="col-lg-6">
+            <div class="cv-card p-3 h-100 d-flex flex-column" style="min-height: 580px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small font-monospace"><i class="fas fa-code me-1"></i>Python Source Code</span>
+                    <span class="text-secondary small font-monospace">Real Execution Tracing</span>
+                </div>
+                <div id="editor-container" class="flex-grow-1 rounded border border-secondary" style="min-height: 520px; background: #0d1117;"></div>
+            </div>
+        </div>
+
+        <!-- Right: Execution State -->
+        <div class="col-lg-6 d-flex flex-column gap-3">
+            <!-- Variables Table -->
+            <div class="cv-card p-3">
+                <h6 class="text-warning fw-bold mb-2"><i class="fas fa-table me-2"></i>Variables State</h6>
+                <div class="table-responsive">
+                    <table class="var-table w-100">
+                        <thead>
+                            <tr class="text-secondary small font-monospace border-bottom border-secondary">
+                                <th class="py-1">NAME</th>
+                                <th class="py-1">VALUE</th>
+                                <th class="py-1">TYPE</th>
+                                <th class="py-1">REFERENCE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vars-tbody">
+                            <tr><td colspan="4" class="text-secondary text-center py-3 font-monospace small">Click "Visualize Code" to trace execution frames.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dynamic Memory & Recursion Tree -->
+            <div class="cv-card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-secondary">
+                    <h6 class="text-info fw-bold mb-0"><i class="fas fa-sitemap me-2 text-warning"></i>Dynamic Memory & Recursion Tree</h6>
+                    <div class="d-flex gap-1" role="group">
+                        <button type="button" class="cv-btn cv-btn-primary cv-btn-sm" id="memory-tree-btn"><i class="fa-solid fa-sitemap me-1"></i>Recursion Tree</button>
+                        <button type="button" class="cv-btn cv-btn-secondary cv-btn-sm" id="memory-cards-btn">Cards</button>
+                        <button type="button" class="cv-btn cv-btn-secondary cv-btn-sm" id="memory-graph-btn">Graph</button>
+                    </div>
+                </div>
+                <div id="memory-box" class="mt-2 overflow-auto" style="min-height: 220px;">
+                    <div class="p-3 text-center rounded border border-secondary font-monospace small" style="background: var(--bg-sidebar);">
+                        <i class="fa-solid fa-sitemap text-warning fs-5 mb-2 d-block"></i>
+                        <span class="text-light fw-bold">No Call Tree Generated Yet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call Stack & Output -->
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="cv-card p-3 h-100">
+                        <h6 class="text-light fw-bold mb-2"><i class="fas fa-layer-group me-2 text-warning"></i>Call Stack</h6>
+                        <div id="call-stack-box">
+                            <div class="call-stack-item"><i class="fas fa-layer-group me-2 text-primary"></i>main()</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="cv-card p-3 h-100">
+                        <h6 class="text-light fw-bold mb-2"><i class="fas fa-terminal me-2 text-warning"></i>Standard Output</h6>
+                        <pre id="console-output-box" class="p-2 rounded text-light font-monospace small mb-0" style="background: var(--bg-sidebar); border: 1px solid var(--border-color); height: 100px; overflow-y: auto;">(no output yet)</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
+<script>
+const sampleTraceCode = `def factorial(n):
+    if n == 0:
+        return 1
+    return n * factorial(n - 1)
+
+print(factorial(5))
+`;
+
+function onRunCodeTrace() {
+    const code = codeEditor ? codeEditor.getValue() : sampleTraceCode;
+    const lang = document.getElementById('viz-language-select').value;
+    startCodeTrace(code, '', lang);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const langSelect = document.getElementById('viz-language-select');
+    const initialLang = langSelect ? langSelect.value : 'python';
+
+    await initMonacoEditor('editor-container', sampleTraceCode, initialLang);
+
+    if (langSelect) {
+        langSelect.addEventListener('change', () => {
+            const lang = langSelect.value;
+            if (codeEditor && typeof monaco !== 'undefined' && monaco.editor && codeEditor.getModel) {
+                const monacoLang = lang === 'cpp' ? 'cpp' : (lang === 'c' ? 'c' : (lang === 'javascript' ? 'javascript' : (lang === 'java' ? 'java' : 'python')));
+                monaco.editor.setModelLanguage(codeEditor.getModel(), monacoLang);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

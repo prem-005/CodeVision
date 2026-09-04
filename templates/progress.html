@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Progress Roadmap - CodeVision{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary-subtle">
+        <div>
+            <h2 class="fw-bold text-light mb-1"><i class="fa-solid fa-chart-line text-success me-2"></i>Topic Mastery Roadmap</h2>
+            <p class="text-secondary mb-0">Track your learning progress across all 17 fundamental computer science topics.</p>
+        </div>
+    </div>
+
+    <div class="row g-4" id="topicProgressGrid">
+        <div class="col-12 text-center py-5 text-secondary">
+            <div class="spinner-border text-warning" role="status"></div>
+            <div class="mt-2">Loading topic mastery progress...</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/dashboard/stats')
+        .then(r => r.json())
+        .then(data => {
+            if(data.success) {
+                renderProgressGrid(data.topics);
+            }
+        });
+});
+
+function renderProgressGrid(topicsMap) {
+    const topics = [
+        "Array", "String", "Linked List", "Stack", "Queue", "Tree", "Graph",
+        "Sorting", "Searching", "Heap", "Hash Table", "Recursion",
+        "Backtracking", "Dynamic Programming", "Greedy", "Bit Manipulation", "Math"
+    ];
+
+    const container = document.getElementById('topicProgressGrid');
+    container.innerHTML = topics.map(t => {
+        const count = topicsMap[t] || 0;
+        const target = 5;
+        const pct = Math.min(100, Math.round((count / target) * 100));
+
+        let color = 'bg-secondary';
+        if(pct >= 100) color = 'bg-success';
+        else if(pct >= 50) color = 'bg-warning';
+        else if(pct > 0) color = 'bg-info';
+
+        return `
+            <div class="col-md-6 col-lg-4">
+                <div class="card bg-dark-card border-secondary-subtle p-3 h-100 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold text-light mb-0">${t}</h6>
+                        <span class="badge text-bg-dark border border-secondary font-monospace">${count} Solved</span>
+                    </div>
+                    <div class="progress bg-dark mb-2" style="height: 10px;">
+                        <div class="progress-bar ${color}" style="width: ${pct}%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-secondary small font-monospace">
+                        <span>Mastery</span>
+                        <span>${pct}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+</script>
+{% endblock %}

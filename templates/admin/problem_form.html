@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{% if problem %}Edit Problem{% else %}New Problem{% endif %} &mdash; Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 780px;">
+    <div class="cv-card p-4">
+        <h4 class="text-light fw-bold mb-3">{% if problem %}Edit Problem #{{ problem.id }}{% else %}Add New Problem{% endif %}</h4>
+        <form id="problem-form">
+            <input type="hidden" id="prob-id" value="{{ problem.id if problem else '' }}">
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Title</label>
+                <input type="text" id="prob-title" class="cv-input" value="{{ problem.title if problem else '' }}" required>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <label class="text-secondary small fw-bold mb-1">Difficulty</label>
+                    <select id="prob-diff" class="cv-select">
+                        <option value="Easy" {% if problem and problem.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Medium" {% if problem and problem.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                        <option value="Hard" {% if problem and problem.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-secondary small fw-bold mb-1">Topic</label>
+                    <input type="text" id="prob-topic" class="cv-input" value="{{ problem.topic if problem else 'Array' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Description</label>
+                <textarea id="prob-desc" class="cv-input" rows="5">{{ problem.description if problem else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Constraints</label>
+                <textarea id="prob-const" class="cv-input font-monospace small" rows="2">{{ problem.constraints if problem else '' }}</textarea>
+            </div>
+            <button type="button" class="cv-btn cv-btn-primary w-100" onclick="saveAdminProblem()">Save Problem</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function saveAdminProblem() {
+    const data = {
+        id: document.getElementById('prob-id').value ? parseInt(document.getElementById('prob-id').value) : null,
+        title: document.getElementById('prob-title').value,
+        difficulty: document.getElementById('prob-diff').value,
+        topic: document.getElementById('prob-topic').value,
+        description: document.getElementById('prob-desc').value,
+        constraints: document.getElementById('prob-const').value
+    };
+    const res = await CodeVision.api('/admin/api/problems', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+    if (res.success) {
+        CodeVision.toast('Problem saved successfully', 'success');
+        window.location.href = '/admin/problems';
+    } else {
+        CodeVision.toast(res.error || 'Save failed', 'error');
+    }
+}
+</script>
+{% endblock %}

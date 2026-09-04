@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}DSA Algorithm Visualizer &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="text-light fw-bold mb-1">DSA & Algorithm Visualizer</h2>
+            <p class="text-secondary mb-0">Interactive visual exploration of sorting, searching, graphs, and Big-O growth curves.</p>
+        </div>
+    </div>
+
+    <!-- Algorithm Category Tabs -->
+    <ul class="nav nav-pills mb-4 gap-2">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#sorting-tab">Sorting</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#searching-tab">Searching</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#complexity-tab">Big-O Complexity</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- 1. Sorting Tab -->
+        <div class="tab-pane fade show active" id="sorting-tab">
+            <div class="cv-card p-4 mb-4">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="text-secondary small fw-bold">Algorithm:</label>
+                        <select id="sorting-algo-select" class="cv-select py-1" style="width: 180px;">
+                            <option value="bubble_sort">Bubble Sort (O(n²))</option>
+                            <option value="selection_sort">Selection Sort (O(n²))</option>
+                            <option value="insertion_sort">Insertion Sort (O(n²))</option>
+                            <option value="quick_sort">Quick Sort (O(n log n))</option>
+                            <option value="merge_sort">Merge Sort (O(n log n))</option>
+                            <option value="heap_sort">Heap Sort (O(n log n))</option>
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="generateRandomArray()"><i class="fas fa-random me-1"></i>Random Array</button>
+                        <button class="cv-btn cv-btn-primary cv-btn-sm" onclick="runSortingViz()"><i class="fas fa-play me-1"></i>Animate Sort</button>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div id="dsa-canvas" class="dsa-canvas mb-3"></div>
+                <div class="text-warning font-monospace text-center small" id="dsa-action-text">Ready to animate sorting steps.</div>
+            </div>
+        </div>
+
+        <!-- 2. Searching Tab -->
+        <div class="tab-pane fade" id="searching-tab">
+            <div class="cv-card p-4">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="text-secondary small fw-bold">Algorithm:</label>
+                        <select id="search-algo-select" class="cv-select py-1" style="width: 180px;">
+                            <option value="binary_search">Binary Search (O(log n))</option>
+                            <option value="linear_search">Linear Search (O(n))</option>
+                            <option value="jump_search">Jump Search (O(√n))</option>
+                            <option value="interpolation_search">Interpolation Search (O(log log n))</option>
+                        </select>
+                        <input type="number" id="search-target" class="cv-input py-1" style="width: 100px;" value="50" placeholder="Target">
+                    </div>
+                    <button class="cv-btn cv-btn-primary cv-btn-sm" onclick="runSearchViz()"><i class="fas fa-search me-1"></i>Search</button>
+                </div>
+                <div id="search-results-box" class="p-3 bg-dark rounded border border-dark text-center font-monospace"></div>
+            </div>
+        </div>
+
+        <!-- 3. Big-O Complexity Tab -->
+        <div class="tab-pane fade" id="complexity-tab">
+            <div class="cv-card p-4">
+                <h5 class="text-light fw-bold mb-3"><i class="fas fa-chart-line me-2 text-warning"></i>Asymptotic Growth Visualizer</h5>
+                <p class="text-secondary small mb-3">Compare growth rates of O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ), and O(n!).</p>
+                <div style="height: 360px;">
+                    <canvas id="complexityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
+<script>
+let currentArray = [64, 34, 25, 12, 22, 11, 90];
+
+function generateRandomArray() {
+    currentArray = Array.from({length: 10}, () => Math.floor(Math.random() * 85) + 10);
+    renderSortingStepDirect(currentArray);
+}
+
+function renderSortingStepDirect(arr) {
+    const container = document.getElementById('dsa-canvas');
+    if (!container) return;
+    container.innerHTML = '';
+    const maxVal = Math.max(...arr, 100);
+    arr.forEach(val => {
+        const bar = document.createElement('div');
+        bar.className = 'dsa-bar';
+        bar.style.height = `${(val / maxVal) * 220}px`;
+        bar.innerText = val;
+        container.appendChild(bar);
+    });
+}
+
+function runSortingViz() {
+    const algo = document.getElementById('sorting-algo-select').value;
+    visualizeSorting(algo, currentArray);
+}
+
+async function runSearchViz() {
+    const algo = document.getElementById('search-algo-select').value;
+    const target = parseInt(document.getElementById('search-target').value) || 50;
+    const sorted = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+    const res = await CodeVision.api('/api/visualizer/searching', {
+        method: 'POST',
+        body: JSON.stringify({ algorithm: algo, array: sorted, target: target })
+    });
+    const box = document.getElementById('search-results-box');
+    if (res.success && res.data) {
+        box.innerHTML = `<div class="text-success fw-bold mb-2">Target ${target} ${res.data.found ? 'FOUND' : 'NOT FOUND'} in ${res.data.total_steps} steps! (Complexity: ${res.data.time_complexity})</div>`;
+        res.data.steps.forEach(s => {
+            box.innerHTML += `<div class="text-secondary small">${s.action}</div>`;
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    generateRandomArray();
+
+    // Complexity Chart
+    const ctx = document.getElementById('complexityChart');
+    if (ctx && typeof Chart !== 'undefined') {
+        const nVals = [1, 2, 4, 8, 16, 32, 64];
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: nVals,
+                datasets: [
+                    { label: 'O(1) Constant', data: nVals.map(() => 1), borderColor: '#10b981', fill: false },
+                    { label: 'O(log n) Logarithmic', data: nVals.map(n => Math.log2(n)), borderColor: '#06b6d4', fill: false },
+                    { label: 'O(n) Linear', data: nVals.map(n => n), borderColor: '#3b82f6', fill: false },
+                    { label: 'O(n log n) Linearithmic', data: nVals.map(n => n * Math.log2(n)), borderColor: '#f59e0b', fill: false },
+                    { label: 'O(n²) Quadratic', data: nVals.map(n => Math.min(n * n, 500)), borderColor: '#ef4444', fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { color: '#1f293d' }, ticks: { color: '#9ca3af' } },
+                    y: { grid: { color: '#1f293d' }, ticks: { color: '#9ca3af' }, suggestedMax: 300 }
+                },
+                plugins: {
+                    legend: { labels: { color: '#f3f4f6' } }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

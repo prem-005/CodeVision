@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Study & Cheat Sheets - CodeVision{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary-subtle">
+        <div>
+            <h2 class="fw-bold text-light mb-1"><i class="fa-solid fa-book-open text-warning me-2"></i>DSA Study Guides & Complexity Cheat Sheets</h2>
+            <p class="text-secondary mb-0">Reference time/space complexities, data structure properties, and common interview patterns.</p>
+        </div>
+    </div>
+
+    <!-- Topic Cards Grid -->
+    <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-warning"><i class="fa-solid fa-layer-group me-2"></i>Arrays & Dynamic Arrays</h5>
+                    <p class="text-secondary small">Contiguous memory allocation allowing O(1) random access by index.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>Access: O(1)</li>
+                        <li>Search: O(N)</li>
+                        <li>Insertion: O(N)</li>
+                        <li>Deletion: O(N)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-info"><i class="fa-solid fa-link me-2"></i>Singly & Doubly Linked Lists</h5>
+                    <p class="text-secondary small">Nodes linked via memory pointers. Fast O(1) insertions at head or tail.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>Access: O(N)</li>
+                        <li>Search: O(N)</li>
+                        <li>Insertion: O(1)</li>
+                        <li>Deletion: O(1)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-success"><i class="fa-solid fa-cubes me-2"></i>Stacks & Queues</h5>
+                    <p class="text-secondary small">LIFO (Last-In-First-Out) and FIFO (First-In-First-Out) linear collections.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>Push / Pop: O(1)</li>
+                        <li>Enqueue / Dequeue: O(1)</li>
+                        <li>Peek / Top: O(1)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-purple"><i class="fa-solid fa-network-wired me-2"></i>Trees & Binary Search Trees</h5>
+                    <p class="text-secondary small">Hierarchical node structure with left child &lt; parent &lt; right child.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>Search: O(log N) avg / O(N) worst</li>
+                        <li>Insertion: O(log N)</li>
+                        <li>Inorder: Left -> Root -> Right</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-danger"><i class="fa-solid fa-diagram-project me-2"></i>Graph Algorithms</h5>
+                    <p class="text-secondary small">Vertices connected by directed/undirected weighted or unweighted edges.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>BFS / DFS: O(V + E)</li>
+                        <li>Dijkstra: O((V + E) log V)</li>
+                        <li>Floyd-Warshall: O(V^3)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark-card border-secondary-subtle h-100 p-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-warning"><i class="fa-solid fa-calculator me-2"></i>Dynamic Programming</h5>
+                    <p class="text-secondary small">Breaking complex problems into overlapping subproblems with memoization/tabulation.</p>
+                    <ul class="text-secondary small font-monospace ps-3 mb-0">
+                        <li>0/1 Knapsack: O(N * W)</li>
+                        <li>LCS: O(M * N)</li>
+                        <li>Coin Change: O(N * Amount)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}System Analytics &mdash; Admin{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="admin-sidebar">
+        <h6 class="text-warning fw-bold px-2 mb-3"><i class="fas fa-shield-alt me-2"></i>Admin Console</h6>
+        <a href="/admin" class="admin-nav-item"><i class="fas fa-chart-line"></i>Overview</a>
+        <a href="/admin/problems" class="admin-nav-item"><i class="fas fa-code"></i>Manage Problems</a>
+        <a href="/admin/testcases" class="admin-nav-item"><i class="fas fa-vial"></i>Test Cases</a>
+        <a href="/admin/users" class="admin-nav-item"><i class="fas fa-users"></i>Manage Users</a>
+        <a href="/admin/analytics" class="admin-nav-item active"><i class="fas fa-chart-bar"></i>System Analytics</a>
+    </div>
+    <div class="admin-content">
+        <h3 class="text-light fw-bold mb-4">Platform Learning Analytics</h3>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="cv-card p-4">
+                    <h5 class="text-light fw-bold mb-3"><i class="fas fa-chart-pie me-2 text-warning"></i>Difficulty Acceptance Rate</h5>
+                    <div style="height: 260px;">
+                        <canvas id="adminAccChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="cv-card p-4">
+                    <h5 class="text-light fw-bold mb-3"><i class="fas fa-chart-bar me-2 text-warning"></i>Topic Distribution</h5>
+                    <div style="height: 260px;">
+                        <canvas id="adminTopicChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Chart !== 'undefined') {
+        new Chart(document.getElementById('adminAccChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Easy (65%)', 'Medium (48%)', 'Hard (28%)'],
+                datasets: [{ data: [65, 48, 28], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#f3f4f6' } } } }
+        });
+
+        new Chart(document.getElementById('adminTopicChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Array', 'String', 'Tree', 'Graph', 'DP', 'Linked List'],
+                datasets: [{ label: 'Problems', data: [12, 10, 8, 8, 8, 7], backgroundColor: '#6366f1' }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { ticks: { color: '#9ca3af' } }, y: { ticks: { color: '#9ca3af' } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

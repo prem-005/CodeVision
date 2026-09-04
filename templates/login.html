@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Login &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 160px);">
+    <div class="cv-card p-4 p-md-5" style="max-width: 440px; width: 100%;">
+        <div class="text-center mb-4">
+            <i class="fas fa-terminal fa-2x text-warning mb-2"></i>
+            <h3 class="text-light fw-bold">Sign In</h3>
+            <p class="text-secondary small">Access your CodeVision dashboard & practice workspace</p>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger py-2 px-3 small">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/login">
+            <div class="mb-3">
+                <label class="form-label text-secondary small fw-semibold">Username or Email</label>
+                <input type="text" name="username" class="cv-input" placeholder="e.g. student or student@codevision.dev" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-secondary small fw-semibold">Password</label>
+                <input type="password" name="password" class="cv-input" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="cv-btn cv-btn-primary w-100 py-2">Sign In</button>
+        </form>
+
+        <div class="mt-4 pt-3 border-top border-dark text-center">
+            <div class="bg-dark p-2 rounded text-secondary small mb-3">
+                <div class="text-warning fw-semibold mb-1"><i class="fas fa-key me-1"></i>Demo Accounts:</div>
+                <div>Admin: <code>admin</code> / <code>admin123</code></div>
+                <div>Student: <code>student</code> / <code>student123</code></div>
+            </div>
+            <span class="text-secondary small">Don't have an account? <a href="/register" class="text-warning">Register</a></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

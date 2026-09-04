@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Supported Compilers &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="text-light fw-bold mb-1">Supported Multi-Language Environments</h2>
+        <p class="text-secondary mb-0">Installed execution compilers and runtime environments detected on the host runner.</p>
+    </div>
+
+    <div class="row g-3" id="compilers-grid">
+        {% for k, v in compilers.items() %}
+            <div class="col-md-6">
+                <div class="cv-card p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-light fw-bold mb-1">{{ v.language }}</h6>
+                        <div class="text-secondary small font-monospace">{{ v.version or v.message }}</div>
+                    </div>
+                    <div>
+                        {% if v.installed %}
+                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Installed</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Missing</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

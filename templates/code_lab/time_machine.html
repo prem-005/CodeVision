@@ -1,0 +1,213 @@
+﻿{% extends "base.html" %}
+{% block title %}Time Machine — CodeVision Lab{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+:root{--tm-left:320px;--tm-right:300px;--tm-bottom:210px;}
+.tm-layout{display:grid;grid-template-columns:var(--tm-left) 1fr var(--tm-right);grid-template-rows:1fr var(--tm-bottom);height:calc(100vh - 56px);overflow:hidden;background:var(--bg-main);}
+.tm-panel{border-right:1px solid var(--border-color);display:flex;flex-direction:column;overflow:hidden;}
+.tm-panel-header{padding:.6rem 1rem;background:var(--bg-card);border-bottom:1px solid var(--border-color);font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:between;gap:.5rem;flex-shrink:0;}
+.tm-panel-body{flex:1;overflow:auto;padding:.75rem;}
+/* Code panel */
+.CodeMirror{height:100%!important;font-family:'JetBrains Mono',monospace;font-size:13px;background:#0d1117!important;}
+.cm-highlight-line{background:rgba(245,158,11,.18)!important;}
+.cm-event-badge{font-size:.65rem;padding:.1rem .4rem;border-radius:4px;font-weight:700;margin-left:.5rem;}
+/* Center viz */
+.tm-viz{grid-column:2;border-right:1px solid var(--border-color);display:flex;flex-direction:column;overflow:hidden;}
+.tm-viz-tabs{display:flex;gap:0;border-bottom:1px solid var(--border-color);flex-shrink:0;background:var(--bg-card);}
+.tm-viz-tab{padding:.55rem 1rem;font-size:.78rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.tm-viz-tab.active{color:var(--primary-accent);border-color:var(--primary-accent);}
+.tm-viz-canvas{flex:1;overflow:auto;padding:1rem;display:flex;align-items:flex-start;justify-content:center;}
+/* Right inspector */
+.tm-inspector{border:none;background:var(--bg-card);}
+.inspector-tabs{display:flex;border-bottom:1px solid var(--border-color);}
+.inspector-tab{flex:1;padding:.5rem;text-align:center;font-size:.73rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.inspector-tab.active{color:var(--primary-accent);border-color:var(--primary-accent);}
+/* Timeline */
+.tm-timeline{grid-column:1/-1;border-top:1px solid var(--border-color);background:var(--bg-card);padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+.tm-controls{display:flex;align-items:center;justify-content:center;gap:.75rem;}
+.tm-btn{background:rgba(255,255,255,.06);border:1px solid var(--border-color);border-radius:8px;color:#fff;padding:.45rem .9rem;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem;}
+.tm-btn:hover{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);}
+.tm-btn.primary{background:var(--primary-accent);border-color:var(--primary-accent);color:#000;font-weight:600;}
+.tm-btn.primary:hover{background:#d97706;}
+.tm-slider-wrap{position:relative;padding:0 .25rem;}
+#tm-slider{width:100%;appearance:none;height:6px;border-radius:3px;background:var(--border-color);outline:none;cursor:pointer;}
+#tm-slider::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary-accent);border:2px solid #fff;cursor:grab;box-shadow:0 0 8px rgba(245,158,11,.5);}
+.tm-step-info{display:flex;align-items:center;justify-content:space-between;font-size:.82rem;}
+.step-counter{font-weight:700;color:var(--primary-accent);}
+.step-line-badge{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:.2rem .6rem;font-size:.75rem;color:var(--primary-accent);}
+.step-event-badge{border-radius:6px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;}
+.ev-call{background:rgba(6,182,212,.15);color:#06b6d4;}
+.ev-line{background:rgba(245,158,11,.12);color:#f59e0b;}
+.ev-return{background:rgba(34,197,94,.12);color:#22c55e;}
+.ev-exception{background:rgba(239,68,68,.15);color:#ef4444;}
+/* Variables table */
+.var-row{display:grid;grid-template-columns:1fr 1fr 80px;gap:.5rem;padding:.45rem .5rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem;cursor:pointer;border-radius:4px;transition:background .2s;}
+.var-row:hover{background:rgba(245,158,11,.06);}
+.var-name{color:var(--primary-accent);font-family:'JetBrains Mono',monospace;font-weight:600;}
+.var-val{color:#e2e8f0;font-family:'JetBrains Mono',monospace;word-break:break-all;}
+.var-type{color:var(--text-muted);font-size:.72rem;text-align:right;}
+/* Call stack */
+.cs-frame{background:rgba(255,255,255,.04);border-radius:6px;padding:.4rem .75rem;font-size:.82rem;font-family:'JetBrains Mono',monospace;color:#e2e8f0;border-left:2px solid var(--border-color);margin-bottom:.35rem;}
+.cs-frame.active{border-color:var(--primary-accent);color:#fff;}
+/* What changed */
+.wc-item{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;border-radius:8px;background:rgba(255,255,255,.03);margin-bottom:.4rem;font-size:.82rem;}
+.wc-icon{color:var(--primary-accent);width:14px;margin-top:.1rem;flex-shrink:0;}
+.wc-cat{font-weight:600;color:#e2e8f0;margin-right:.3rem;}
+/* History modal */
+.hist-item{display:flex;align-items:center;justify-content:space-between;padding:.45rem .75rem;border-radius:6px;cursor:pointer;font-size:.82rem;transition:background .2s;}
+.hist-item:hover{background:rgba(245,158,11,.08);}
+.hist-step{color:var(--text-muted);font-size:.75rem;width:60px;}
+.hist-val{color:#e2e8f0;font-family:'JetBrains Mono',monospace;}
+/* Output */
+.tm-output{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#a3e635;background:#050709;border-radius:8px;padding:.75rem;white-space:pre-wrap;min-height:60px;max-height:200px;overflow-y:auto;}
+/* Error */
+.tm-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:.75rem 1rem;color:#f87171;font-size:.82rem;}
+/* Recursion tree SVG */
+.rtree-node circle{fill:#1f293d;stroke:var(--primary-accent);stroke-width:2;}
+.rtree-node.active circle{fill:rgba(245,158,11,.25);}
+.rtree-node.returned circle{fill:rgba(34,197,94,.15);stroke:#22c55e;}
+.rtree-node text{fill:#e2e8f0;font-size:11px;text-anchor:middle;dominant-baseline:central;}
+.rtree-link{stroke:var(--border-color);stroke-width:1.5;fill:none;}
+/* Diff modal */
+.diff-old{background:rgba(239,68,68,.1);color:#fca5a5;}
+.diff-new{background:rgba(34,197,94,.1);color:#86efac;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="tm-layout" id="tm-layout">
+
+    <!-- LEFT: Code Panel -->
+    <div class="tm-panel" id="tm-code-panel">
+        <div class="tm-panel-header">
+            <i class="fas fa-code text-warning me-2"></i>Source Code
+            <div class="ms-auto d-flex gap-2">
+                <button class="tm-btn primary" id="tm-run-btn"><i class="fas fa-play"></i>Run</button>
+                <button class="tm-btn" id="tm-diff-btn" disabled><i class="fas fa-exchange-alt"></i>Diff</button>
+            </div>
+        </div>
+        <textarea id="tm-code-editor" style="display:none"></textarea>
+        <div id="tm-code-cm" style="flex:1;overflow:hidden;"></div>
+    </div>
+
+    <!-- CENTER: Visualization -->
+    <div class="tm-viz">
+        <div class="tm-viz-tabs">
+            <div class="tm-viz-tab active" data-tab="viz-auto">Auto Detect</div>
+            <div class="tm-viz-tab" data-tab="viz-memory">Memory</div>
+            <div class="tm-viz-tab" data-tab="viz-recursion">Recursion Tree</div>
+            <div class="tm-viz-tab" data-tab="viz-output">Output</div>
+        </div>
+        <div class="tm-viz-canvas" id="viz-auto"></div>
+        <div class="tm-viz-canvas" id="viz-memory" style="display:none"></div>
+        <div class="tm-viz-canvas" id="viz-recursion" style="display:none"></div>
+        <div class="tm-viz-canvas" id="viz-output" style="display:none"><pre class="tm-output" id="tm-output-display">Run code to see output...</pre></div>
+    </div>
+
+    <!-- RIGHT: Inspector -->
+    <div class="tm-panel tm-inspector">
+        <div class="tm-panel-header"><i class="fas fa-search me-2 text-warning"></i>Inspector</div>
+        <div class="inspector-tabs">
+            <div class="inspector-tab active" data-itab="vars">Variables</div>
+            <div class="inspector-tab" data-itab="stack">Call Stack</div>
+            <div class="inspector-tab" data-itab="changed">What Changed</div>
+            <div class="inspector-tab" data-itab="history">History</div>
+        </div>
+        <div class="tm-panel-body" id="inspector-vars">
+            <div class="text-center text-muted small mt-4"><i class="fas fa-play-circle mb-2 d-block fa-2x"></i>Run code to inspect variables</div>
+        </div>
+        <div class="tm-panel-body" id="inspector-stack" style="display:none">
+            <div class="text-center text-muted small mt-4"><i class="fas fa-layer-group mb-2 d-block fa-2x"></i>Run code to see the call stack</div>
+        </div>
+        <div class="tm-panel-body" id="inspector-changed" style="display:none">
+            <div class="text-center text-muted small mt-4"><i class="fas fa-exchange-alt mb-2 d-block fa-2x"></i>Navigate the timeline to see what changed</div>
+        </div>
+        <div class="tm-panel-body" id="inspector-history" style="display:none">
+            <div class="text-center text-muted small mt-4"><i class="fas fa-history mb-2 d-block fa-2x"></i>Click a variable to see its full history</div>
+        </div>
+    </div>
+
+    <!-- BOTTOM: Timeline -->
+    <div class="tm-timeline">
+        <div class="tm-step-info">
+            <span class="step-counter" id="tm-step-label">Step 0 / 0</span>
+            <div class="d-flex gap-2" id="tm-event-badges"></div>
+            <span id="tm-line-badge" class="step-line-badge" style="display:none">Line —</span>
+        </div>
+        <div class="tm-slider-wrap">
+            <input type="range" id="tm-slider" min="0" max="0" value="0" disabled>
+        </div>
+        <div class="tm-controls">
+            <button class="tm-btn" id="ctrl-first" title="First (Home)"><i class="fas fa-step-backward"></i></button>
+            <button class="tm-btn" id="ctrl-prev" title="Previous (←)"><i class="fas fa-chevron-left"></i></button>
+            <button class="tm-btn primary" id="ctrl-play" title="Play/Pause (Space)"><i class="fas fa-play" id="play-icon"></i></button>
+            <button class="tm-btn" id="ctrl-next" title="Next (→)"><i class="fas fa-chevron-right"></i></button>
+            <button class="tm-btn" id="ctrl-last" title="Last (End)"><i class="fas fa-step-forward"></i></button>
+            <div class="ms-3 d-flex align-items-center gap-2">
+                <label class="text-muted small">Speed</label>
+                <select class="form-select form-select-sm" id="tm-speed" style="width:80px;background:var(--bg-main);border-color:var(--border-color);color:#fff;">
+                    <option value="1000">0.5x</option>
+                    <option value="600" selected>1x</option>
+                    <option value="300">2x</option>
+                    <option value="150">4x</option>
+                </select>
+            </div>
+            <div class="ms-2 d-flex align-items-center gap-2">
+                <label class="text-muted small">Custom Input</label>
+                <input type="text" id="tm-custom-input" placeholder="e.g. 45,12,89" class="form-control form-control-sm" style="width:160px;background:var(--bg-main);border-color:var(--border-color);color:#fff;">
+            </div>
+        </div>
+        <div id="tm-error-banner" class="tm-error" style="display:none"></div>
+    </div>
+</div>
+
+<!-- Variable History Modal -->
+<div class="modal fade" id="varHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);">
+            <div class="modal-header border-0">
+                <h6 class="modal-title text-warning fw-bold" id="varHistTitle">Variable History</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="varHistBody"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Diff Mode Modal -->
+<div class="modal fade" id="diffModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);">
+            <div class="modal-header border-0">
+                <h6 class="modal-title text-warning fw-bold">Step Comparison (Diff Mode)</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3 mb-3">
+                    <div class="col">
+                        <label class="form-label text-muted small">Step A</label>
+                        <input type="number" class="form-control" id="diff-step-a" min="1" style="background:var(--bg-main);border-color:var(--border-color);color:#fff;">
+                    </div>
+                    <div class="col">
+                        <label class="form-label text-muted small">Step B</label>
+                        <input type="number" class="form-control" id="diff-step-b" min="1" style="background:var(--bg-main);border-color:var(--border-color);color:#fff;">
+                    </div>
+                    <div class="col-auto d-flex align-items-end">
+                        <button class="cv-btn cv-btn-primary" id="diff-run-btn">Compare</button>
+                    </div>
+                </div>
+                <div id="diff-result"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="{{ url_for('static', filename='js/time_machine.js') }}"></script>
+{% endblock %}

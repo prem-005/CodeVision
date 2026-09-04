@@ -1,0 +1,136 @@
+﻿{% extends "base.html" %}
+{% block title %}Mutation Lab — CodeVision Lab{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+.ml-layout{display:flex;flex-direction:column;height:calc(100vh - 56px);overflow:hidden;background:var(--bg-main);}
+.ml-header{background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:.75rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;}
+.ml-header-title{font-size:1rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.5rem;}
+.ml-body{flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
+.ml-side{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border-color);}
+.ml-side:last-child{border-right:none;}
+.ml-side-header{background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:.5rem 1rem;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.ml-orig-head{color:var(--primary-accent);}
+.ml-mut-head{color:#06b6d4;}
+.ml-editor-wrap{flex:0 0 220px;border-bottom:1px solid var(--border-color);overflow:hidden;}
+.CodeMirror{height:220px!important;font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#0d1117!important;}
+.ml-viz-area{flex:1;overflow:auto;padding:1rem;}
+.ml-inspector{background:var(--bg-card);border-top:1px solid var(--border-color);padding:.75rem 1rem;font-size:.82rem;max-height:200px;overflow-y:auto;}
+.ml-bottom{border-top:1px solid var(--border-color);background:var(--bg-card);padding:1rem 1.5rem;flex-shrink:0;}
+.ml-comparison-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.cmp-box{background:var(--bg-main);border:1px solid var(--border-color);border-radius:10px;padding:1rem;text-align:center;}
+.cmp-label{font-size:.72rem;font-weight:600;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
+.cmp-val{font-size:1.25rem;font-weight:800;color:#fff;}
+.severity-badge{display:inline-block;padding:.3rem .9rem;border-radius:2rem;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.sev-critical{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.35);}
+.sev-high{background:rgba(245,158,11,.2);color:#f59e0b;border:1px solid rgba(245,158,11,.35);}
+.sev-medium{background:rgba(234,179,8,.15);color:#eab308;border:1px solid rgba(234,179,8,.3);}
+.sev-low{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.25);}
+.divergence-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:1rem;}
+.explanation-box{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:10px;padding:1rem;font-size:.83rem;color:var(--text-secondary);line-height:1.65;}
+.ml-btn{background:rgba(255,255,255,.06);border:1px solid var(--border-color);border-radius:8px;color:#fff;padding:.45rem .9rem;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem;}
+.ml-btn:hover{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);}
+.ml-btn.primary{background:var(--primary-accent);border-color:var(--primary-accent);color:#000;font-weight:600;}
+.ml-btn.primary:hover{background:#d97706;}
+.ml-btn.cyan{background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.35);color:#06b6d4;}
+.ml-btn.cyan:hover{background:rgba(6,182,212,.3);}
+.mutation-select{background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:#fff;padding:.4rem .75rem;font-size:.82rem;}
+.var-row-ml{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.35rem .5rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.78rem;}
+.var-name-ml{color:var(--primary-accent);font-family:'JetBrains Mono',monospace;font-weight:600;}
+.var-val-ml{color:#e2e8f0;font-family:'JetBrains Mono',monospace;}
+.diff-highlight{background:rgba(245,158,11,.2);border-left:3px solid var(--primary-accent);}
+.diverg-marker{display:inline-flex;align-items:center;gap:.4rem;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:.25rem .65rem;font-size:.75rem;font-weight:700;color:#f87171;}
+.output-compare{font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.5rem;border-radius:6px;white-space:pre-wrap;}
+.out-orig{background:rgba(245,158,11,.06);border-left:2px solid rgba(245,158,11,.4);}
+.out-mut{background:rgba(6,182,212,.06);border-left:2px solid rgba(6,182,212,.4);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ml-layout">
+    <!-- Header -->
+    <div class="ml-header">
+        <div class="ml-header-title"><span>&#129516;</span> Algorithm Mutation Lab</div>
+        <select class="mutation-select" id="ml-mutation-select"><option value="">-- Select Mutation Type --</option></select>
+        <button class="ml-btn primary" id="ml-run-btn"><i class="fas fa-dna me-1"></i>Mutate &amp; Run</button>
+        <button class="ml-btn" id="ml-restore-btn" disabled><i class="fas fa-undo me-1"></i>Restore Original</button>
+        <button class="ml-btn cyan" id="ml-newmut-btn" disabled><i class="fas fa-random me-1"></i>New Mutation</button>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <label class="text-muted small">Custom Input</label>
+            <input type="text" id="ml-custom-input" placeholder="e.g. 45,12,89" class="form-control form-control-sm" style="width:160px;background:var(--bg-main);border-color:var(--border-color);color:#fff;">
+        </div>
+    </div>
+
+    <!-- Side by Side -->
+    <div class="ml-body">
+        <!-- ORIGINAL -->
+        <div class="ml-side">
+            <div class="ml-side-header ml-orig-head"><i class="fas fa-code me-2"></i>ORIGINAL</div>
+            <div class="ml-editor-wrap"><textarea id="ml-original-editor"></textarea><div id="ml-orig-cm"></div></div>
+            <div class="ml-viz-area" id="ml-orig-viz"><div class="text-center text-muted small mt-4"><i class="fas fa-play-circle fa-2x mb-2 d-block"></i>Run to visualize execution</div></div>
+            <div class="ml-inspector" id="ml-orig-inspector"><div class="text-muted small">Variables will appear here...</div></div>
+        </div>
+
+        <!-- MUTATED -->
+        <div class="ml-side">
+            <div class="ml-side-header ml-mut-head"><i class="fas fa-dna me-2"></i>MUTATED</div>
+            <div class="ml-editor-wrap"><textarea id="ml-mutated-editor"></textarea><div id="ml-mut-cm"></div></div>
+            <div class="ml-viz-area" id="ml-mut-viz"><div class="text-center text-muted small mt-4"><i class="fas fa-dna fa-2x mb-2 d-block"></i>Mutation will appear here</div></div>
+            <div class="ml-inspector" id="ml-mut-inspector"><div class="text-muted small">Variables will appear here...</div></div>
+        </div>
+    </div>
+
+    <!-- Bottom Comparison Panel -->
+    <div class="ml-bottom" id="ml-comparison" style="display:none">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="ml-comparison-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                    <div class="cmp-box">
+                        <div class="cmp-label">Orig Steps</div>
+                        <div class="cmp-val text-warning" id="cmp-orig-steps">—</div>
+                    </div>
+                    <div class="cmp-box">
+                        <div class="cmp-label">Mut Steps</div>
+                        <div class="cmp-val" style="color:#06b6d4" id="cmp-mut-steps">—</div>
+                    </div>
+                    <div class="cmp-box">
+                        <div class="cmp-label">Severity</div>
+                        <div id="cmp-severity">—</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="divergence-box">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="diverg-marker"><i class="fas fa-exclamation-triangle"></i>First Divergence</div>
+                        <strong id="cmp-div-step" class="text-danger">—</strong>
+                    </div>
+                    <div id="cmp-div-detail" class="text-muted small"></div>
+                    <div class="mt-2">
+                        <div class="small fw-600 text-muted mb-1">Output Comparison</div>
+                        <div class="output-compare out-orig" id="cmp-orig-out"></div>
+                        <div class="output-compare out-mut mt-1" id="cmp-mut-out"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="explanation-box">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fas fa-info-circle text-info"></i>
+                        <strong class="text-info" style="font-size:.8rem;">WHY DID IT CHANGE?</strong>
+                    </div>
+                    <div id="cmp-explanation"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="{{ url_for('static', filename='js/mutation_lab.js') }}"></script>
+{% endblock %}

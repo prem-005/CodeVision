@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Student Portfolio &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Profile Card -->
+    <div class="cv-card p-4 mb-4 border-warning">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="p-3 bg-dark rounded-circle border border-warning text-warning">
+                    <i class="fas fa-user-graduate fa-2x"></i>
+                </div>
+                <div>
+                    <h3 class="text-light fw-bold mb-1" id="port-username">{{ user.username if user else 'Student Portfolio' }}</h3>
+                    <p class="text-secondary mb-0">Verified Technical Portfolio & Verified Projects Showcase</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="cv-btn cv-btn-secondary" onclick="navigator.clipboard.writeText(window.location.href); CodeVision.toast('Portfolio link copied!', 'success');"><i class="fas fa-share-alt me-1"></i>Share Portfolio</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

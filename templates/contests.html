@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Contests &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="text-light fw-bold mb-1">Timed Contests</h2>
+            <p class="text-secondary mb-0">Compete in live timed algorithmic sprints and climb the global ranking ladder.</p>
+        </div>
+    </div>
+
+    <div class="row g-4" id="contests-list">
+        <div class="col-12 text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading contests...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await CodeVision.api('/api/contests');
+    const container = document.getElementById('contests-list');
+    if (res.success && res.contests) {
+        container.innerHTML = '';
+        res.contests.forEach(c => {
+            container.innerHTML += `
+                <div class="col-md-6">
+                    <div class="cv-card cv-card-interactive p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-warning text-dark font-monospace">${c.duration_minutes} Minutes</span>
+                                <span class="badge badge-${c.difficulty.toLowerCase()}">${c.difficulty}</span>
+                            </div>
+                            <h4 class="text-light fw-bold mb-2">${c.title}</h4>
+                            <p class="text-secondary small mb-3">${c.description}</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-dark">
+                            <span class="text-muted small">${c.problem_count} Problems</span>
+                            <a href="/contests/${c.slug}" class="cv-btn cv-btn-primary cv-btn-sm"><i class="fas fa-play me-1"></i>Enter Contest</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+});
+</script>
+{% endblock %}

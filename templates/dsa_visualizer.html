@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}DSA Algorithm Visualizer — CodeVision{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary-subtle">
+        <div>
+            <h2 class="fw-bold text-light mb-1">
+                <i class="fa-solid fa-cubes text-warning me-2"></i>DSA & Algorithm Visualizer
+            </h2>
+            <p class="text-secondary mb-0">Interactive 2D animations for Data Structures, Sorting, Searching, Graphs, Trees, and Dynamic Programming.</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <select id="dsaCategorySelect" class="cv-select text-warning font-monospace fw-semibold" style="width: 260px;" onchange="onCategoryChange()">
+                <option value="Sorting">Sorting Algorithms</option>
+                <option value="Searching">Searching Algorithms</option>
+                <option value="Structures">Data Structures (Stack, Queue, List)</option>
+                <option value="Trees">Trees & Binary Search Trees</option>
+                <option value="Graphs">Graph Algorithms (BFS, DFS)</option>
+                <option value="Recursion">Recursion & Backtracking</option>
+                <option value="DP">Dynamic Programming</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="row g-3">
+
+        <!-- LEFT: Control Panel -->
+        <div class="col-lg-3">
+            <div class="cv-card h-100 d-flex flex-column">
+                <h6 class="fw-bold text-light mb-3 pb-2 border-bottom border-secondary">
+                    <i class="fa-solid fa-sliders text-warning me-2"></i>Control Panel
+                </h6>
+
+                <!-- Algorithm Dropdown -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-semibold">Select Algorithm / Structure</label>
+                    <select id="algoSelect" class="cv-select" onchange="initSelectedAlgorithm()">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Custom Input / Data Generator -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-semibold" id="inputDataLabel">Input Array / Values</label>
+                    <input type="text" id="dsaInputData" class="cv-input font-monospace small" value="45, 12, 89, 34, 67, 23, 90, 11" aria-describedby="dsaInputHelp dsaInputError">
+                    <div id="dsaInputHelp" class="form-text text-secondary">Numbers separated by commas. Max 100 values.</div>
+                    <div id="dsaInputError" class="text-danger small mt-1" role="alert"></div>
+                </div>
+
+                <!-- Target Input (Searching) -->
+                <div class="mb-3 d-none" id="targetInputGroup">
+                    <label class="form-label text-secondary small fw-semibold">Target Value</label>
+                    <input type="text" id="dsaTargetVal" class="cv-input text-warning font-monospace small" value="34">
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="d-grid gap-2 mb-3">
+                    <button class="cv-btn cv-btn-primary py-2" onclick="startAlgorithmAnimation()" id="btnStartAlgo">
+                        <i class="fa-solid fa-play me-2"></i>Start Animation
+                    </button>
+                    <button class="cv-btn cv-btn-secondary py-2" onclick="resetAlgorithmAnimation()">
+                        <i class="fa-solid fa-rotate-left me-2"></i>Reset Canvas
+                    </button>
+                    <button class="cv-btn cv-btn-secondary py-2" onclick="generateRandomData()" id="btnRandomize">
+                        <i class="fa-solid fa-shuffle me-2"></i>Randomize Data
+                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="cv-btn cv-btn-secondary flex-fill py-1 small" onclick="loadDsaExample()">Load Example</button>
+                        <button class="cv-btn cv-btn-secondary flex-fill py-1 small" onclick="clearDsaInput()">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Animation Speed -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between text-secondary small mb-1 fw-semibold">
+                        <span>Animation Speed</span>
+                        <span id="speedLabel" class="font-monospace text-warning">1.0x</span>
+                    </div>
+                    <input type="range" class="form-range" id="dsaSpeedRange" min="0.25" max="4" step="0.25" value="1" oninput="updateDsaSpeed(this.value)">
+                </div>
+
+                <!-- Complexity Card -->
+                <div class="cv-card p-3 mt-auto" style="background: var(--bg-sidebar);">
+                    <h6 class="fw-bold text-warning small mb-2"><i class="fa-solid fa-calculator me-1"></i>Complexity Info</h6>
+                    <div class="text-secondary small font-monospace" id="complexityInfo">
+                        <div>Time: <span class="text-light fw-bold" id="compTime">O(N log N)</span></div>
+                        <div>Space: <span class="text-light fw-bold" id="compSpace">O(N)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Interactive Graphic Canvas -->
+        <div class="col-lg-9">
+            <div class="cv-card p-4 h-100 d-flex flex-column" style="min-height: 540px;">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
+                    <h6 class="fw-bold text-light mb-0" id="canvasTitle"><i class="fa-solid fa-chart-column me-2 text-warning"></i>Algorithm Visualization</h6>
+                    <div class="d-flex gap-3 text-secondary small font-monospace" id="canvasStatsContainer">
+                        <div>Comparisons: <strong class="text-warning" id="statComparisons">0</strong></div>
+                        <div>Swaps: <strong class="text-info" id="statSwaps">0</strong></div>
+                    </div>
+                </div>
+
+                <!-- Canvas Display Container -->
+                <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center position-relative p-3 rounded border border-secondary overflow-auto" id="dsaCanvasContainer" style="background: #0d1117; min-height: 420px;">
+                    <!-- Dynamic SVG/DOM Canvas Elements Rendered Here -->
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 mt-3 px-2 text-secondary small" id="dsaLegend" aria-label="Visualization legend">
+                    <span><i class="fa-solid fa-circle text-warning me-1"></i>Current</span>
+                    <span><i class="fa-solid fa-circle text-success me-1"></i>Visited / Sorted</span>
+                    <span><i class="fa-solid fa-arrow-right text-info me-1"></i>Connection / Direction</span>
+                </div>
+
+                <!-- Action / Step Explanation Banner -->
+                <div class="mt-3 p-2 rounded border border-secondary text-secondary small font-monospace d-flex align-items-center justify-content-between" id="dsaLogBanner" style="background: var(--bg-sidebar);">
+                    <div><i class="fa-solid fa-circle-info text-info me-2"></i><span id="dsaLogText" class="text-light">Ready to start visualization. Click <strong>Start Animation</strong>.</span></div>
+                    <span class="badge bg-secondary" id="dsaStatusBadge">Ready</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
+{% endblock %}

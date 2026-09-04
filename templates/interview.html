@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Interview Preparation &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="text-light fw-bold mb-1">Placement & Interview Preparation</h2>
+            <p class="text-secondary mb-0">Core engineering subject quizzes, DSA mock interviews, and technical aptitude.</p>
+        </div>
+    </div>
+
+    <!-- Category Cards -->
+    <div class="row g-3 mb-4">
+        {% for cat in ['DSA', 'OOP', 'DBMS', 'OS', 'CN'] %}
+            <div class="col">
+                <button class="cv-btn cv-btn-secondary w-100 py-3 text-center fw-bold" onclick="loadQuiz('{{ cat }}')">
+                    {{ cat }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Interactive Quiz Container -->
+    <div class="cv-card p-4" id="quiz-container">
+        <h5 class="text-light fw-bold mb-3" id="quiz-title"><i class="fas fa-question-circle me-2 text-warning"></i>Select a category above to start practice</h5>
+        <div id="quiz-questions-list" class="d-flex flex-column gap-3"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadQuiz(category) {
+    const res = await CodeVision.api(`/api/interview/quiz?category=${category}`);
+    if (res.success && res.questions) {
+        document.getElementById('quiz-title').innerText = `${category} Technical Assessment`;
+        const list = document.getElementById('quiz-questions-list');
+        list.innerHTML = '';
+        res.questions.forEach((q, i) => {
+            const opts = q.options.map((opt, idx) => `
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" name="q-${i}" id="q-${i}-${idx}" value="${idx}">
+                    <label class="form-check-label text-secondary small" for="q-${i}-${idx}">${opt}</label>
+                </div>
+            `).join('');
+
+            list.innerHTML += `
+                <div class="p-3 bg-dark rounded border border-dark">
+                    <div class="text-light fw-semibold mb-2">Q${i+1}. ${q.q}</div>
+                    <div class="mb-2">${opts}</div>
+                    <button class="cv-btn cv-btn-secondary cv-btn-sm" onclick="checkAnswer(${i}, ${q.answer}, '${encodeURIComponent(q.explanation)}')">Verify</button>
+                    <div id="ans-box-${i}" class="mt-2 small" style="display:none;"></div>
+                </div>
+            `;
+        });
+    }
+}
+
+function checkAnswer(qIdx, correctIdx, explanation) {
+    const selected = document.querySelector(`input[name="q-${qIdx}"]:checked`);
+    const box = document.getElementById(`ans-box-${qIdx}`);
+    box.style.display = 'block';
+    if (!selected) {
+        box.className = 'text-warning';
+        box.innerText = 'Please select an option first.';
+        return;
+    }
+    if (parseInt(selected.value) === correctIdx) {
+        box.className = 'text-success fw-bold';
+        box.innerText = `Correct! ${decodeURIComponent(explanation)}`;
+    } else {
+        box.className = 'text-danger fw-bold';
+        box.innerText = `Incorrect. ${decodeURIComponent(explanation)}`;
+    }
+}
+</script>
+{% endblock %}

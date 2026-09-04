@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}CodeVision &mdash; Practice. Build. Visualize. Understand.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="text-center my-5 py-4">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-dark border border-warning">
+            <span class="badge bg-warning text-dark font-monospace">v2.0</span>
+            <span class="text-warning small font-monospace">Next-Gen Intelligent Coding & Project Platform</span>
+        </div>
+        <h1 class="display-3 fw-bold text-light mb-3" style="letter-spacing: -1.5px;">
+            CODEVISION
+        </h1>
+        <p class="h4 text-warning fw-normal mb-4 font-monospace">"Practice. Build. Visualize. Understand."</p>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 760px; font-size: 1.15rem;">
+            Coding and project-learning platform that helps students master programming, Data Structures & Algorithms, and real-world software engineering through interactive practice and step-by-step execution visualization.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/problems" class="cv-btn cv-btn-primary px-4 py-2"><i class="fas fa-play me-2"></i>Start Coding</a>
+            <a href="/visualizer" class="cv-btn cv-btn-secondary px-4 py-2"><i class="fas fa-eye me-2"></i>Code Visualizer</a>
+            <a href="/algorithms" class="cv-btn cv-btn-secondary px-4 py-2"><i class="fas fa-project-diagram me-2"></i>DSA Visualizer</a>
+        </div>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div class="row g-4 my-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-code fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Online Judge</h5>
+                <p class="text-secondary small mb-0">Multi-language execution engine (Python, Java, C++, JavaScript, C) with hidden testcase protection and sub-millisecond evaluation.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-brain fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Code Visualizer</h5>
+                <p class="text-secondary small mb-0">Step through execution line-by-line with dynamic variable tables, heap references, call stack animations, and speed sliders.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-project-diagram fa-2x"></i></div>
+                <h5 class="text-light fw-bold">DSA Visualizer</h5>
+                <p class="text-secondary small mb-0">Interactive visualizers for Sorting (8 algos), Searching, Linked Lists, Trees, Graphs (BFS/DFS/Dijkstra), DP, and Big-O Complexity curves.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-road fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Learning Paths</h5>
+                <p class="text-secondary small mb-0">Curated progression roadmaps from Programming Basics to Advanced Graph Algorithms and Machine Learning engineering.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-chart-line fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Skill Analytics</h5>
+                <p class="text-secondary small mb-0">Multi-dimensional skill tracking, weak-topic detection, and adaptive ML recommendations to guide your next practice problem.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-trophy fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Timed Contests</h5>
+                <p class="text-secondary small mb-0">Compete in timed 30, 60, and 90-minute challenges with live scores, wrong-answer penalties, and global rating leaderboards.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="cv-card cv-card-interactive h-100 p-4">
+                <div class="text-warning mb-3"><i class="fas fa-id-badge fa-2x"></i></div>
+                <h5 class="text-light fw-bold">Student Portfolio</h5>
+                <p class="text-secondary small mb-0">Showcase completed project submissions, verified test case pass rates, badges, and skill radar directly to recruiters.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{% if project %}Edit Project{% else %}New Project{% endif %} &mdash; Admin{% endblock %}
+{% block content %}
+<div class="container py-4" style="max-width: 780px;">
+    <div class="cv-card p-4">
+        <h4 class="text-light fw-bold mb-3">{% if project %}Edit Project #{{ project.id }}{% else %}Add New Project{% endif %}</h4>
+        <form id="proj-form">
+            <input type="hidden" id="p-id" value="{{ project.id if project else '' }}">
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Project Title</label>
+                <input type="text" id="p-title" class="cv-input" value="{{ project.title if project else '' }}" placeholder="e.g. Library Management System" required oninput="generateDefaultClassTemplate()">
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <label class="text-secondary small fw-bold mb-1">Category</label>
+                    <input type="text" id="p-cat" class="cv-input" value="{{ project.category if project else 'Software Engineering' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="text-secondary small fw-bold mb-1">Difficulty</label>
+                    <select id="p-diff" class="cv-select">
+                        <option value="Beginner" {% if project and project.difficulty == 'Beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="Intermediate" {% if project and project.difficulty == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="Advanced" {% if project and project.difficulty == 'Advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Real-World Scenario</label>
+                <textarea id="p-scen" class="cv-input" rows="3">{{ project.scenario if project else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Requirements</label>
+                <textarea id="p-req" class="cv-input" rows="4">{{ project.requirements if project else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="text-secondary small fw-bold mb-1">Starter Code (Default Class Template)</label>
+                <textarea id="p-starter" class="cv-input font-monospace small" rows="8">{% if project %}{{ project.starter_code.get('python', '') }}{% else %}class ProjectEngine:
+    def __init__(self):
+        # Initialize internal state and data structures
+        pass
+
+    def execute(self):
+        # TODO: Implement core logic
+        pass
+
+if __name__ == '__main__':
+    engine = ProjectEngine()
+    engine.execute()
+{% endif %}</textarea>
+            </div>
+            <button type="button" class="cv-btn cv-btn-primary w-100" onclick="saveAdminProject()">Save Project</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function generateDefaultClassTemplate() {
+    const title = document.getElementById('p-title').value.trim();
+    if (!title || document.getElementById('p-id').value) return;
+    
+    // Clean to PascalCase class name (e.g., "Library Management System" -> "LibraryManagementSystem")
+    const className = title.replace(/[^a-zA-Z0-9 ]/g, '').split(' ')
+        .filter(w => w.length > 0)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join('') || 'ProjectEngine';
+
+    document.getElementById('p-starter').value = `class ${className}:
+    def __init__(self):
+        # Initialize data structures and state
+        pass
+
+    def run(self):
+        # TODO: Implement project requirements
+        pass
+
+if __name__ == '__main__':
+    app = ${className}()
+    print("Project initialized.")`;
+}
+
+async function saveAdminProject() {
+    const title = document.getElementById('p-title').value.trim();
+    if (!title) {
+        CodeVision.toast('Please enter a project title', 'error');
+        return;
+    }
+    const starterCode = document.getElementById('p-starter').value;
+    const data = {
+        id: document.getElementById('p-id').value ? parseInt(document.getElementById('p-id').value) : null,
+        title: title,
+        category: document.getElementById('p-cat').value,
+        difficulty: document.getElementById('p-diff').value,
+        scenario: document.getElementById('p-scen').value,
+        requirements: document.getElementById('p-req').value,
+        starter_code: { python: starterCode }
+    };
+    CodeVision.toast('Project saved successfully', 'success');
+    window.location.href = '/admin/projects';
+}
+</script>
+{% endblock %}

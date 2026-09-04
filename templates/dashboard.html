@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Dashboard &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Top Welcome Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-4 cv-card border-warning">
+        <div>
+            <h2 class="text-light fw-bold mb-1">Welcome back, <span class="text-warning">{{ session.get('username') }}</span></h2>
+            <p class="text-secondary mb-0">Track your algorithmic progress, skill growth, and project milestones.</p>
+        </div>
+        <div class="d-flex gap-3 mt-3 mt-md-0">
+            <a href="/problems" class="cv-btn cv-btn-primary"><i class="fas fa-code me-1"></i>Solve Problems</a>
+        </div>
+    </div>
+
+    <!-- Core Metrics Stats Row -->
+    <div class="row g-3 mb-4" id="stats-container">
+        <div class="col-6 col-md-3">
+            <div class="cv-card p-3 text-center">
+                <div class="text-muted small fw-semibold uppercase">Total Solved</div>
+                <h3 class="text-light fw-bold my-1" id="stat-solved">--</h3>
+                <div class="d-flex justify-content-center gap-2 small">
+                    <span class="text-success" id="stat-easy">0 Easy</span>
+                    <span class="text-warning" id="stat-med">0 Med</span>
+                    <span class="text-danger" id="stat-hard">0 Hard</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="cv-card p-3 text-center">
+                <div class="text-muted small fw-semibold uppercase">Current Streak</div>
+                <h3 class="text-warning fw-bold my-1" id="stat-streak">--</h3>
+                <div class="text-secondary small"><i class="fas fa-fire text-warning me-1"></i>Days Active</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="cv-card p-3 text-center">
+                <div class="text-muted small fw-semibold uppercase">Total Points</div>
+                <h3 class="text-warning fw-bold my-1" id="stat-points">--</h3>
+                <div class="text-secondary small">Rating: <span id="stat-rating" class="text-light fw-bold">--</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Analytics Row: Radar & Heatmap & Recs -->
+    <div class="row g-4 mb-4">
+        <!-- Skill Radar -->
+        <div class="col-lg-6">
+            <div class="cv-card p-4 h-100">
+                <h5 class="text-light fw-bold mb-3"><i class="fas fa-chart-pie me-2 text-warning"></i>Skill Radar Analytics</h5>
+                <div style="height: 320px; position: relative;">
+                    <canvas id="skillRadarCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adaptive Recommendations & Heatmap -->
+        <div class="col-lg-6">
+            <div class="cv-card p-4 mb-4">
+                <h5 class="text-light fw-bold mb-2"><i class="fas fa-brain me-2 text-warning"></i>Learning Recommendations</h5>
+                <p class="text-secondary small mb-3" id="rec-reason">Analyzing your performance data...</p>
+                <div id="rec-problems-list" class="d-flex flex-column gap-2 mb-3"></div>
+            </div>
+
+            <div class="cv-card p-4">
+                <h5 class="text-light fw-bold mb-3"><i class="fas fa-calendar-alt me-2 text-warning"></i>Coding Heatmap (Last 30 Days)</h5>
+                <div class="d-flex flex-wrap gap-2" id="heatmap-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Submissions & Achievements -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="cv-card p-4">
+                <h5 class="text-light fw-bold mb-3"><i class="fas fa-history me-2 text-warning"></i>Recent Submissions</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead>
+                            <tr class="text-secondary small">
+                                <th>Problem</th>
+                                <th>Status</th>
+                                <th>Language</th>
+                                <th>Runtime</th>
+                                <th>Quality</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-subs-tbody">
+                            <tr><td colspan="6" class="text-center text-muted py-3">Loading submissions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="cv-card p-4">
+                <h5 class="text-light fw-bold mb-3"><i class="fas fa-award me-2 text-warning"></i>Badges Unlocked</h5>
+                <div id="badges-container" class="d-flex flex-column gap-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await CodeVision.api('/api/dashboard');
+    if (!res.success) return;
+
+    const stats = res.stats || {};
+    document.getElementById('stat-solved').innerText = stats.total_solved || 0;
+    document.getElementById('stat-easy').innerText = `${stats.easy_solved || 0} Easy`;
+    document.getElementById('stat-med').innerText = `${stats.medium_solved || 0} Med`;
+    document.getElementById('stat-hard').innerText = `${stats.hard_solved || 0} Hard`;
+    document.getElementById('stat-streak').innerText = `${stats.current_streak || 0}d`;
+    document.getElementById('stat-points').innerText = stats.total_points || 0;
+    document.getElementById('stat-rating').innerText = stats.contest_rating || 1200;
+
+    // Render Radar
+    if (res.skills && res.skills.labels) {
+        renderSkillRadarChart('skillRadarCanvas', res.skills.labels, res.skills.scores);
+    }
+
+    // Recommendations
+    if (res.recommendations) {
+        document.getElementById('rec-reason').innerText = res.recommendations.reason || '';
+        const recList = document.getElementById('rec-problems-list');
+        recList.innerHTML = '';
+        (res.recommendations.recommended_problems || []).forEach(p => {
+            recList.innerHTML += `
+                <div class="d-flex align-items-center justify-content-between p-2 bg-dark rounded border border-dark">
+                    <div>
+                        <a href="/problems/${p.slug}" class="text-light fw-semibold text-decoration-none">${p.title}</a>
+                        <span class="badge badge-${p.difficulty.toLowerCase()} ms-2">${p.difficulty}</span>
+                    </div>
+                    <a href="/problems/${p.slug}" class="cv-btn cv-btn-primary cv-btn-sm">Solve</a>
+                </div>
+            `;
+        });
+    }
+
+    // Heatmap
+    const heatContainer = document.getElementById('heatmap-container');
+    if (heatContainer && stats.heatmap) {
+        heatContainer.innerHTML = '';
+        Object.keys(stats.heatmap).reverse().forEach(date => {
+            const count = stats.heatmap[date];
+            const level = count === 0 ? 'heatmap-0' : (count === 1 ? 'heatmap-1' : (count <= 3 ? 'heatmap-2' : (count <= 5 ? 'heatmap-3' : 'heatmap-4')));
+            heatContainer.innerHTML += `<div class="heatmap-cell ${level}" title="${date}: ${count} actions"></div>`;
+        });
+    }
+
+    // Submissions
+    const subTbody = document.getElementById('recent-subs-tbody');
+    if (subTbody) {
+        subTbody.innerHTML = '';
+        if (res.recent_submissions && res.recent_submissions.length > 0) {
+            res.recent_submissions.forEach(s => {
+                const statusColor = s.status === 'Accepted' ? 'text-success' : 'text-danger';
+                subTbody.innerHTML += `
+                    <tr>
+                        <td><a href="/problems/${s.problem_id}" class="text-light fw-semibold text-decoration-none">${s.problem_title}</a></td>
+                        <td class="${statusColor} fw-bold">${s.status}</td>
+                        <td><span class="badge bg-secondary font-monospace">${s.language}</span></td>
+                        <td>${s.runtime_ms} ms</td>
+                        <td><span class="badge bg-primary">${s.code_quality_score}/100</span></td>
+                        <td class="text-secondary small">${s.submitted_at ? s.submitted_at.split(' ')[0] : ''}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            subTbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">No submissions recorded yet.</td></tr>';
+        }
+    }
+
+    // Badges
+    const badgeBox = document.getElementById('badges-container');
+    if (badgeBox) {
+        badgeBox.innerHTML = '';
+        if (res.achievements && res.achievements.length > 0) {
+            res.achievements.forEach(a => {
+                badgeBox.innerHTML += `
+                    <div class="d-flex align-items-center gap-3 p-2 bg-dark rounded border border-dark">
+                        <div class="text-warning"><i class="fas ${a.icon || 'fa-award'} fa-lg"></i></div>
+                        <div>
+                            <div class="text-light fw-semibold small">${a.name}</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">${a.description}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            badgeBox.innerHTML = '<div class="text-muted small text-center py-2">Solve problems and complete projects to unlock badges!</div>';
+        }
+    }
+});
+</script>
+{% endblock %}

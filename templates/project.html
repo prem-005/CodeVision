@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} &mdash; Project Lab{% endblock %}
+
+{% block content %}
+<div class="project-ide">
+    <!-- LEFT PANEL: Scenario, Objectives, Requirements, Milestones -->
+    <div class="ide-panel">
+        <div class="ide-panel-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-laptop-code text-warning"></i>
+                <span>{{ project.category }}</span>
+            </div>
+            <span class="badge badge-{{ project.difficulty.lower() }}">{{ project.difficulty }}</span>
+        </div>
+        <div class="ide-panel-body">
+            <h4 class="text-light fw-bold mb-2">{{ project.title }}</h4>
+            <div class="d-flex gap-2 flex-wrap mb-3">
+                {% for s in project.to_dict()['skills_covered'] %}
+                    <span class="badge-topic">{{ s }}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Real world Scenario -->
+            <div class="cv-card p-3 mb-3 border-warning bg-dark">
+                <h6 class="text-warning fw-bold mb-1"><i class="fas fa-building me-1"></i>Real-World Scenario:</h6>
+                <div class="text-light small">{{ project.scenario }}</div>
+            </div>
+
+            <!-- Objectives & Requirements -->
+            <h6 class="text-light fw-bold mb-1">Objective:</h6>
+            <p class="text-secondary small mb-3">{{ project.objective }}</p>
+
+            <h6 class="text-light fw-bold mb-1">Requirements:</h6>
+            <pre class="bg-dark p-2 rounded text-light font-monospace small mb-4" style="white-space: pre-line;">{{ project.requirements }}</pre>
+
+            <!-- Milestones Progress -->
+            <h6 class="text-light fw-bold mb-2"><i class="fas fa-tasks me-1 text-warning"></i>Project Milestones:</h6>
+            <div id="milestones-container">
+                {% for m in project.milestones %}
+                    <div class="milestone-item" id="milestone-{{ m.id }}">
+                        <i class="far fa-circle text-muted milestone-status-icon"></i>
+                        <div>
+                            <div class="text-light fw-semibold small">{{ m.title }}</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">{{ m.description }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: Editor, Runner & Milestone Verification -->
+    <div class="ide-panel">
+        <div class="ide-panel-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-code text-warning"></i>
+                <span>Your Implementation</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="cv-btn cv-btn-secondary cv-btn-sm" id="proj-run-btn"><i class="fas fa-play me-1"></i>Run</button>
+                <button class="cv-btn cv-btn-primary cv-btn-sm" id="proj-submit-btn"><i class="fas fa-check-circle me-1"></i>Verify & Submit</button>
+            </div>
+        </div>
+
+        <div id="proj-monaco-container" class="monaco-wrapper" style="height: 60%;"></div>
+
+        <div class="ide-panel-body" style="height: 40%; border-top: 1px solid var(--border-color);">
+            <h6 class="text-secondary small fw-bold mb-2">Evaluation Output:</h6>
+            <div id="project-results-box">
+                <div class="text-muted small">Click "Verify & Submit" to run all public and hidden milestone test scenarios.</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project-lab.js') }}"></script>
+<script>
+const projectId = {{ project.id }};
+const starterCode = {{ project.starter_code_json | safe }}['python'] || "# Write your project implementation here\n";
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initMonacoEditor('proj-monaco-container', starterCode, 'python');
+
+    document.getElementById('proj-submit-btn').addEventListener('click', async () => {
+        const code = codeEditor ? codeEditor.getValue() : '';
+        await submitProjectCode(projectId, 'python', code);
+    });
+
+    document.getElementById('proj-run-btn').addEventListener('click', async () => {
+        const code = codeEditor ? codeEditor.getValue() : '';
+        const resBox = document.getElementById('project-results-box');
+        resBox.innerHTML = '<div class="text-secondary"><i class="fas fa-spinner fa-spin me-2"></i>Running code...</div>';
+        const res = await CodeVision.api(`/api/projects/${projectId}/run`, {
+            method: 'POST',
+            body: JSON.stringify({ code, language: 'python' })
+        });
+        if (res.success) {
+            resBox.innerHTML = `<pre class="bg-dark p-2 rounded text-light font-monospace small">${res.stdout || '(no output)'}</pre>`;
+        }
+    });
+});
+</script>
+{% endblock %}

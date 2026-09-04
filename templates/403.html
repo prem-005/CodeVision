@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}403 - Access Forbidden{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5 my-5">
+    <i class="fa-solid fa-lock text-danger display-1 mb-3"></i>
+    <h1 class="display-4 fw-bold text-light mb-2">403 - Forbidden</h1>
+    <p class="text-secondary lead mb-4">{{ message or "You do not have permission to access this administrative resource." }}</p>
+    <a href="{{ url_for('index') }}" class="btn btn-warning btn-lg rounded-pill fw-bold px-4">
+        <i class="fa-solid fa-house me-2"></i>Go to Home
+    </a>
+</div>
+{% endblock %}

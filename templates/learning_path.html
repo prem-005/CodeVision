@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Learning Paths &mdash; CodeVision {% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h2 class="text-light fw-bold mb-2">DSA & Software Engineering Roadmap</h2>
+        <p class="text-secondary">Follow structured milestones from foundational programming to full stack projects.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Beginner Path -->
+        <div class="col-md-4">
+            <div class="cv-card p-4 h-100 border-success">
+                <span class="badge bg-success text-dark mb-2">Stage 1</span>
+                <h4 class="text-light fw-bold mb-3">Beginner Foundation</h4>
+                <ul class="list-unstyled text-secondary small d-flex flex-column gap-2 mb-4">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Programming Basics & Syntax</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Arrays & Two Pointers</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Strings & Palindromes</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Simple OOP Project</li>
+                </ul>
+                <a href="/problems?difficulty=Easy" class="cv-btn cv-btn-secondary w-100">Start Stage 1</a>
+            </div>
+        </div>
+
+        <!-- Intermediate Path -->
+        <div class="col-md-4">
+            <div class="cv-card p-4 h-100 border-warning">
+                <span class="badge bg-warning text-dark mb-2">Stage 2</span>
+                <h4 class="text-light fw-bold mb-3">Core Data Structures</h4>
+                <ul class="list-unstyled text-secondary small d-flex flex-column gap-2 mb-4">
+                    <li><i class="fas fa-check-circle text-warning me-2"></i>Linked Lists & Cycles</li>
+                    <li><i class="fas fa-check-circle text-warning me-2"></i>Stacks, Queues, Min-Stack</li>
+                    <li><i class="fas fa-check-circle text-warning me-2"></i>Binary Trees & BSTs</li>
+                    <li><i class="fas fa-check-circle text-warning me-2"></i>Binary Search & Sorting</li>
+                </ul>
+                <a href="/problems?difficulty=Medium" class="cv-btn cv-btn-primary w-100">Start Stage 2</a>
+            </div>
+        </div>
+
+        <!-- Advanced Path -->
+        <div class="col-md-4">
+            <div class="cv-card p-4 h-100 border-danger">
+                <span class="badge bg-danger mb-2">Stage 3</span>
+                <h4 class="text-light fw-bold mb-3">Advanced Algorithms</h4>
+                <ul class="list-unstyled text-secondary small d-flex flex-column gap-2 mb-4">
+                    <li><i class="fas fa-check-circle text-danger me-2"></i>Graphs (BFS, DFS, Dijkstra)</li>
+                    <li><i class="fas fa-check-circle text-danger me-2"></i>Dynamic Programming & Knapsack</li>
+                    <li><i class="fas fa-check-circle text-danger me-2"></i>Backtracking (N-Queens)</li>
+                    <li><i class="fas fa-check-circle text-danger me-2"></i>Educational ML Projects</li>
+                </ul>
+                <a href="/problems?difficulty=Hard" class="cv-btn cv-btn-secondary w-100">Start Stage 3</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

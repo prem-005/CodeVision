@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Global Leaderboard — CodeVision{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h2 class="text-light fw-bold mb-1"><i class="fas fa-trophy text-warning me-2"></i>Global Competitive Leaderboard</h2>
+        <p class="text-secondary mb-0">Live student rankings sorted by total points, problem solve count, and streak consistency.</p>
+    </div>
+
+    <!-- Top 3 Podium Cards -->
+    <div class="row g-3 mb-4 justify-content-center" id="podium-container">
+        <!-- Rendered dynamically -->
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="cv-card p-0 overflow-hidden" style="max-width: 960px; margin: 0 auto;">
+        <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background: var(--bg-sidebar);">
+            <h6 class="fw-bold text-light mb-0"><i class="fa-solid fa-list-ol me-2 text-warning"></i>All Ranked Students</h6>
+            <input type="text" id="leaderboard-search" class="cv-input font-monospace small" style="width: 220px;" placeholder="Search student...">
+        </div>
+        <div class="table-responsive">
+            <table class="cv-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Rank</th>
+                        <th>Student / User</th>
+                        <th>Points</th>
+                        <th>Problems Solved</th>
+                        <th>Streak</th>
+                        <th class="pe-4">Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-tbody">
+                    <tr><td colspan="6" class="text-center py-4 text-secondary"><i class="fas fa-spinner fa-spin me-2"></i>Loading live rankings...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let leaderboardData = [];
+
+function renderLeaderboard(data) {
+    const tbody = document.getElementById('leaderboard-tbody');
+    const podium = document.getElementById('podium-container');
+
+    if (!data || !data.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-secondary">No rankings available.</td></tr>';
+        return;
+    }
+
+    // Top 3 Podium
+    const top3 = data.slice(0, 3);
+    if (podium && top3.length > 0) {
+        const order = [top3[1], top3[0], top3[2]].filter(Boolean); // Silver (2), Gold (1), Bronze (3)
+        podium.innerHTML = order.map(u => {
+            const isGold = u.rank === 1;
+            const isSilver = u.rank === 2;
+            const borderCol = isGold ? '#f59e0b' : (isSilver ? '#9ca3af' : '#d97706');
+            const icon = isGold ? 'fa-crown text-warning fs-3' : (isSilver ? 'fa-medal text-secondary fs-4' : 'fa-award text-danger fs-4');
+            return `
+                <div class="col-md-4">
+                    <div class="cv-card p-4 text-center cv-card-interactive position-relative" style="border-color: ${borderCol}; transform: ${isGold ? 'scale(1.04)' : 'none'};">
+                        <div class="mb-2"><i class="fa-solid ${icon}"></i></div>
+                        <h5 class="fw-bold text-light mb-1">${u.username}</h5>
+                        <div class="text-warning fw-bold font-monospace fs-4 mb-2">${u.points} <small class="text-secondary fs-6">pts</small></div>
+                        <div class="d-flex justify-content-center gap-3 text-secondary small font-monospace">
+                            <span><i class="fa-solid fa-check text-success me-1"></i>${u.problems_solved} Solved</span>
+                            <span><i class="fa-solid fa-fire text-warning me-1"></i>${u.streak}d Streak</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Table rows
+    tbody.innerHTML = data.map(r => {
+        const rankBadge = r.rank === 1 ? '<i class="fas fa-crown text-warning fs-5"></i>' : (r.rank === 2 ? '<i class="fas fa-medal text-secondary fs-5"></i>' : (r.rank === 3 ? '<i class="fas fa-medal text-danger fs-5"></i>' : `<span class="badge bg-secondary font-monospace">#${r.rank}</span>`));
+        return `
+            <tr>
+                <td class="ps-4 fw-bold">${rankBadge}</td>
+                <td>
+                    <a href="/portfolio/${r.username}" class="text-light fw-semibold text-decoration-none">${r.username}</a>
+                    ${r.role === 'admin' ? '<span class="badge bg-danger ms-1" style="font-size:0.65rem;">Admin</span>' : ''}
+                </td>
+                <td class="text-warning fw-bold font-monospace fs-6">${r.points}</td>
+                <td class="font-monospace text-light">${r.problems_solved}</td>
+                <td class="font-monospace"><i class="fas fa-fire text-warning me-1"></i>${r.streak}d</td>
+                <td class="font-monospace text-info pe-4">${r.contest_rating}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await CodeVision.api('/api/leaderboard');
+    if (res.success && res.leaderboard) {
+        leaderboardData = res.leaderboard;
+        renderLeaderboard(leaderboardData);
+    }
+
+    document.getElementById('leaderboard-search')?.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const filtered = leaderboardData.filter(u => u.username.toLowerCase().includes(query));
+        renderLeaderboard(filtered);
+    });
+});
+</script>
+{% endblock %}

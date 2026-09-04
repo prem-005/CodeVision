@@ -1,0 +1,94 @@
+﻿{% extends "base.html" %}
+{% block title %}CodeVision Lab — Interactive Code Lab{% endblock %}
+
+{% block extra_css %}
+<style>
+.lab-hero {
+    background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 30%, rgba(6,182,212,0.06) 0%, transparent 60%),
+                var(--bg-main);
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+}
+.lab-badge { display:inline-flex;align-items:center;gap:.5rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:2rem;padding:.35rem 1rem;font-size:.78rem;font-weight:600;color:var(--primary-accent);letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem; }
+.lab-title { font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;color:#fff;text-align:center;line-height:1.15; }
+.lab-subtitle { color:var(--text-muted);font-size:1.1rem;text-align:center;max-width:560px;margin:0 auto 3rem;line-height:1.7; }
+.lab-card { background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:2.5rem;transition:all .3s ease;cursor:pointer;text-decoration:none;display:block;position:relative;overflow:hidden; }
+.lab-card::before { content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s; }
+.lab-card.tm::before { background:radial-gradient(ellipse at top left, rgba(245,158,11,0.1), transparent 60%); }
+.lab-card.ml::before { background:radial-gradient(ellipse at top right, rgba(6,182,212,0.1), transparent 60%); }
+.lab-card:hover { border-color:rgba(245,158,11,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4); }
+.lab-card:hover::before { opacity:1; }
+.lab-icon { font-size:3rem;margin-bottom:1.25rem;display:block; }
+.lab-card-title { font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.5rem; }
+.lab-card-desc { color:var(--text-muted);font-size:.95rem;line-height:1.65;margin-bottom:1.5rem; }
+.lab-feature-list { list-style:none;padding:0;margin:0 0 1.75rem; }
+.lab-feature-list li { display:flex;align-items:center;gap:.6rem;font-size:.875rem;color:var(--text-secondary);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04); }
+.lab-feature-list li:last-child { border:none; }
+.lab-feature-list li i { color:var(--primary-accent);width:14px; }
+.lab-flow { background:var(--bg-main);border:1px solid var(--border-color);border-radius:12px;padding:2rem;margin-top:4rem;max-width:800px;width:100%; }
+.flow-title { font-size:.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem; }
+.flow-steps { display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5rem;font-size:.85rem; }
+.flow-step { background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:.4rem .9rem;color:var(--primary-accent);font-weight:500; }
+.flow-arrow { color:var(--text-muted);font-size:1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="lab-hero">
+    <div class="lab-badge"><i class="fas fa-flask"></i>CODEVISION LAB</div>
+    <h1 class="lab-title">Explore What Happens <span class="text-warning">Inside Your Code</span></h1>
+    <p class="lab-subtitle">Travel through execution, inspect every state, mutate algorithms, and discover exactly why they break.</p>
+    <div class="row g-4" style="max-width:900px;width:100%">
+        <div class="col-md-6">
+            <a href="/code-lab/time-machine" class="lab-card tm">
+                <span class="lab-icon">&#128336;</span>
+                <div class="lab-card-title">Code Time Machine</div>
+                <div class="lab-card-desc">Record every execution step and travel freely through your code's history.</div>
+                <ul class="lab-feature-list">
+                    <li><i class="fas fa-check-circle"></i>Interactive step-by-step timeline</li>
+                    <li><i class="fas fa-check-circle"></i>Historical variables, memory &amp; call stack</li>
+                    <li><i class="fas fa-check-circle"></i>Recursion tree time travel</li>
+                    <li><i class="fas fa-check-circle"></i>Variable &amp; object history panels</li>
+                    <li><i class="fas fa-check-circle"></i>"What Changed?" step diff</li>
+                    <li><i class="fas fa-check-circle"></i>Keyboard-driven navigation</li>
+                </ul>
+                <div class="cv-btn cv-btn-primary w-100 text-center" style="pointer-events:none"><i class="fas fa-clock me-2"></i>Open Time Machine</div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="/code-lab/mutation" class="lab-card ml">
+                <span class="lab-icon">&#129516;</span>
+                <div class="lab-card-title">Algorithm Mutation Lab</div>
+                <div class="lab-card-desc">Change one thing in your algorithm and see exactly where — and why — it breaks.</div>
+                <ul class="lab-feature-list">
+                    <li><i class="fas fa-check-circle"></i>6 controlled mutation types</li>
+                    <li><i class="fas fa-check-circle"></i>Side-by-side original vs mutated</li>
+                    <li><i class="fas fa-check-circle"></i>First divergence detection</li>
+                    <li><i class="fas fa-check-circle"></i>Mutation severity scoring</li>
+                    <li><i class="fas fa-check-circle"></i>Deterministic "Why did it break?" explanation</li>
+                    <li><i class="fas fa-check-circle"></i>Independent Time Machine for both</li>
+                </ul>
+                <div class="cv-btn w-100 text-center" style="pointer-events:none;background:rgba(6,182,212,.15);border:1px solid rgba(6,182,212,.35);color:#06b6d4;"><i class="fas fa-dna me-2"></i>Open Mutation Lab</div>
+            </a>
+        </div>
+    </div>
+    <div class="lab-flow text-center">
+        <div class="flow-title"><i class="fas fa-route me-2"></i>The CodeVision Lab Experience</div>
+        <div class="flow-steps">
+            <span class="flow-step">Write Code</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Run</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Record Everything</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">&#128336; Time Machine</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Inspect State</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">&#129516; Mutate</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step">Find Divergence</span><span class="flow-arrow">&#8594;</span>
+            <span class="flow-step" style="background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#22c55e;">Understand</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
